@@ -61,10 +61,10 @@
                                    (db:query (:and (:= 'comic-id comic-id)
                                                    (:= 'page-number page-number)
                                                    (:<= 'publish-time time-now))))
-                               :sort '((publish-time :DESC))))))
-         (when (or (not page) (> (publish-time page) time-now))
+                               :sort '((publish-time :DESC)))))
+         (unless (or page (<= (publish-time page) time-now))
            (error 'request-not-found :message "Comic page does not exist."))
-         (api-output page)))
+         (api-output page))))
       (T (wrong-method-error (http-method *request*))))))
 
 ;; Admin API
