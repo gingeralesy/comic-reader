@@ -56,7 +56,7 @@
        (let ((page (dm:get-one 'comic-page (db:query (:and (:= 'comic-id comic-id)
                                                            (:= 'page-number page-number))))))
          (when (or (not page) (> (publish-time page) (get-universal-time)))
-           (error "Comic page does not exist."))
+           (error 'request-not-found :message "Comic page does not exist."))
          (api-output page)))
       (T (wrong-method-error (http-method *request*))))))
 
@@ -75,7 +75,7 @@
 
 (defun wrong-method-error (method)
   "Throws an error with a message informing this is an unsupported request method."
-  (error (format nil "Request type ~(~a~) not supported." method)))
+  (error 'api-call-not-found :message (format nil "Request type ~(~a~) not supported." method)))
 
 (lquery:define-lquery-function reader-template (node object)
   "Adds content from a different template."
