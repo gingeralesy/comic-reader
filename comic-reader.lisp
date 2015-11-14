@@ -34,7 +34,7 @@
   "The web page for displaying a web comic page."
   (let* ((comic (or (comic comic-id)
                     (error 'request-not-found :message "Invalid comic requested.")))
-         (page (page (comic-id comic) (when page-number (parse-integer page-number)))))
+         (page (page (comic-id comic) (when page-number (parse-integer page-number :junk-allowed T)))))
     (r-clip:process
      T
      :comic-id (comic-id comic)
@@ -48,8 +48,8 @@
 
 (define-api comic/page (comic-id page-number) ()
   "API interface for getting metadata for a comic page."
-  (let ((comic-id (or* comic-id "default"))
-        (page-number (parse-integer page-number)))
+  (let ((comic-id comic-id)
+        (page-number (when page-number (parse-integer page-number :junk-allowed T))))
     (case (http-method *request*)
       (:get
        (let ((page (page comic-id page-number)))
@@ -73,17 +73,17 @@
 
 (defun comic (&optional comic-id)
   (dm:get-one 'comic
-              (if comic-id
+              (if (or* comic-id)
                   (db:query (:= 'comic-id comic-id))
                   (db:query (:= 'is-default 1)))))
 
 (defun page (comic-id &optional page-number (up-to-time (get-universal-time)))
   (dm:get-one 'comic-page
-              (if (not page-number)
-                  (db:query (:and (:= 'comic-id comic-id)
-                                  (:<= 'publish-time up-to-time)))
+              (if page-number
                   (db:query (:and (:= 'comic-id comic-id)
                                   (:= 'page-number page-number)
+                                  (:<= 'publish-time up-to-time)))
+                  (db:query (:and (:= 'comic-id comic-id)
                                   (:<= 'publish-time up-to-time))))
               :sort '((publish-time :DESC))))
 
