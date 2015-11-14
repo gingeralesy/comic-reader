@@ -1,0 +1,13 @@
+(body ;; This is just so the page doesn't hurt eyes while testing
+ :background-color "#FEF0C9")
+
+("div#content"
+ :font-family "'Open Sans', serif"
+ :width 1024px
+ :margin auto)
+
+(.outlined
+ :border 1px solid black)
+
+(.text-box
+ :padding 16px)

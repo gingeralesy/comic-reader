@@ -37,6 +37,9 @@
                     (subseq page-number 1 (length page-number))
                     "0"))) ;; latest page default
 
+(define-page admin #@"/admin" (:lquery (template "admin.ctml"))
+  (r-clip:process T)) ;; TODO: authentication stuffs
+
 ;; User API
 
 (define-api comic/page (comic-id page-number) ()
@@ -51,7 +54,10 @@
 
 ;; Admin API
 
-(define-api admin/comic/page ())
+(define-api admin/comic/page () () ;; TODO: authentication checks here
+  (api-output
+   (alexandria:plist-hash-table
+    '(:teapot "short and stout"))))
 
 ;; Other functions
 
