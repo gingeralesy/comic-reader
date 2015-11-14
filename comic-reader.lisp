@@ -29,13 +29,12 @@
   "The front page of the site."
   (r-clip:process T))
 
-(define-page comic #@"/comic(/[a-zA-Z]+)?(/[0-9]+)?" (:uri-groups (comic-id page-number)
-                                                      :lquery (template "comic.ctml"))
+(define-page comic #@"/comic(/([a-zA-Z]+))?(/([0-9]+))?" (:uri-groups (NIL comic-id NIL page-number)
+                                                          :lquery (template "comic.ctml"))
   "The web page for displaying a web comic page."
-  (let* ((comic (get-comic (when (< 1 (length comic-id)) (subseq comic-id 1 (length comic-id)))))
-         (page (get-comic-page (comic-id (if comic comic (error 'request-not-found :message "Invalid comic requested")))
-                               (when (< 1 (length page-number))
-                                 (parse-integer (subseq page-number 1 (length page-number)))))))
+  (let* ((comic (or (comic comic-id)
+                    (error 'request-not-found :message "Invalid comic requested.")))
+         (page (page (comic-id comic) (when page-number (parse-integer page-number)))))
     (r-clip:process
      T
      :comic-id (comic-id comic)
@@ -53,7 +52,7 @@
         (page-number (parse-integer page-number)))
     (case (http-method *request*)
       (:get
-       (let ((page (get-comic-page comic-id page-number)))
+       (let ((page (page comic-id page-number)))
          (unless (and page (<= (publish-time page) (get-universal-time)))
            (error 'request-not-found :message "Comic page does not exist."))
          (api-output page)))
@@ -72,13 +71,13 @@
 
 ;; Other functions
 
-(defun get-comic (&optional comic-id)
+(defun comic (&optional comic-id)
   (dm:get-one 'comic
               (if comic-id
                   (db:query (:= 'comic-id comic-id))
                   (db:query (:= 'is-default 1)))))
 
-(defun get-comic-page (comic-id &optional page-number (up-to-time (get-universal-time)))
+(defun page (comic-id &optional page-number (up-to-time (get-universal-time)))
   (dm:get-one 'comic-page
               (if (not page-number)
                   (db:query (:and (:= 'comic-id comic-id)
