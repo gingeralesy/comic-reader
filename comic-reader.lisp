@@ -32,14 +32,14 @@
 (define-page comic #@"/comic(/[a-zA-Z]+)?(/[0-9]+)?" (:uri-groups (comic-id page-number)
                                                       :lquery (template "comic.ctml"))
   "The web page for displaying a web comic page."
-  (r-clip:process
-   T
-   :comic-id (if (< 0 (length comic-id))
-                 (subseq comic-id 1 (length comic-id))
-                 "default") ;; get default from somewhere
-   :page-number (if (< 0 (length page-number))
-                    (subseq page-number 1 (length page-number))
-                    "0"))) ;; latest page default
+  (let* ((comic (get-comic (when (< 1 (length comic-id)) (subseq comic-id 1 (length comic-id)))))
+         (page (get-comic-page (comic-id (if comic comic (error 'request-not-found :message "Invalid comic requested")))
+                               (when (< 1 (length page-number))
+                                 (parse-integer (subseq page-number 1 (length page-number)))))))
+    (r-clip:process
+     T
+     :comic-id (comic-id comic)
+     :page-number (page-number page))))
 
 (define-page admin #@"/admin" (:lquery (template "admin.ctml"))
   "The admin console user interface."
@@ -50,19 +50,11 @@
 (define-api comic/page (comic-id page-number) ()
   "API interface for getting metadata for a comic page."
   (let ((comic-id (or* comic-id "default"))
-        (page-number (parse-integer page-number))
-        (time-now (get-universal-time)))
+        (page-number (parse-integer page-number)))
     (case (http-method *request*)
       (:get
-       (let ((page (dm:get-one 'comic-page
-                               (if (not page-number)
-                                   (db:query (:and (:= 'comic-id comic-id)
-                                                   (:<= 'publish-time time-now)))
-                                   (db:query (:and (:= 'comic-id comic-id)
-                                                   (:= 'page-number page-number)
-                                                   (:<= 'publish-time time-now))))
-                               :sort '((publish-time :DESC)))))
-         (unless (and page (<= (publish-time page) time-now))
+       (let ((page (get-comic-page comic-id page-number)))
+         (unless (and page (<= (publish-time page) (get-universal-time)))
            (error 'request-not-found :message "Comic page does not exist."))
          (api-output page))))
       (T (wrong-method-error (http-method *request*))))))
@@ -79,6 +71,22 @@
     (T (wrong-method-error (http-method *request*)))))
 
 ;; Other functions
+
+(defun get-comic (&optional comic-id)
+  (dm:get-one 'comic
+              (if comic-id
+                  (db:query (:= 'comic-id comic-id))
+                  (db:query (:= 'is-default 1)))))
+
+(defun get-comic-page (comic-id &optional page-number (up-to-time (get-universal-time)))
+  (dm:get-one 'comic-page
+              (if (not page-number)
+                  (db:query (:and (:= 'comic-id comic-id)
+                                  (:<= 'publish-time up-to-time)))
+                  (db:query (:and (:= 'comic-id comic-id)
+                                  (:= 'page-number page-number)
+                                  (:<= 'publish-time up-to-time))))
+              :sort '((publish-time :DESC))))
 
 (defun wrong-method-error (method)
   "Throws an error with a message informing this is an unsupported request method."
