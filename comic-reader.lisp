@@ -50,17 +50,17 @@
 (define-api comic/page (comic-id page-number) ()
   "API interface for getting metadata for a comic page."
   (let ((comic-id (or* comic-id "default"))
-        (page-number (or* page-number "latest"))
+        (page-number (parse-integer page-number))
         (time-now (get-universal-time)))
     (case (http-method *request*)
       (:get
-       (let ((page (if (string= page-number "latest")
+       (let ((page (if (not page-number)
                        (dm:get-one 'comic-page
                                    (db:query (:and (:= 'comic-id comic-id)
                                                    (:<= 'publish-time time-now)))
                                    :sort '_id :DESC)
                        (dm:get-one 'comic-page (db:query (:and (:= 'comic-id comic-id)
-                                                               (:= 'page-number (parse-integer page-number))
+                                                               (:= 'page-number page-number)
                                                                (:<= 'publish-time time-now)))))))
          (when (or (not page) (> (publish-time page) time-now))
            (error 'request-not-found :message "Comic page does not exist."))
