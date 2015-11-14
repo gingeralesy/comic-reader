@@ -56,7 +56,7 @@
        (let ((page (get-comic-page comic-id page-number)))
          (unless (and page (<= (publish-time page) (get-universal-time)))
            (error 'request-not-found :message "Comic page does not exist."))
-         (api-output page))))
+         (api-output page)))
       (T (wrong-method-error (http-method *request*))))))
 
 ;; Admin API
