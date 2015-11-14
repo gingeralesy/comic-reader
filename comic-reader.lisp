@@ -54,14 +54,14 @@
         (time-now (get-universal-time)))
     (case (http-method *request*)
       (:get
-       (let ((page (if (not page-number)
-                       (dm:get-one 'comic-page
+       (let ((page (dm:get-one 'comic-page
+                               (if (not page-number)
                                    (db:query (:and (:= 'comic-id comic-id)
                                                    (:<= 'publish-time time-now)))
-                                   :sort '_id :DESC)
-                       (dm:get-one 'comic-page (db:query (:and (:= 'comic-id comic-id)
-                                                               (:= 'page-number page-number)
-                                                               (:<= 'publish-time time-now)))))))
+                                   (db:query (:and (:= 'comic-id comic-id)
+                                                   (:= 'page-number page-number)
+                                                   (:<= 'publish-time time-now)))))
+                               :sort 'publish-time :DESC)))
          (when (or (not page) (> (publish-time page) time-now))
            (error 'request-not-found :message "Comic page does not exist."))
          (api-output page)))
