@@ -4,4 +4,7 @@
   :class "radiance:module"
   :components ((:file "comic-reader")
                (:lass-file "static/css/style"))
-  :depends-on (:r-clip :i-json))
+  :depends-on (:r-clip
+               :i-json
+               (:interface :database)
+               (:interface :data-model)))
