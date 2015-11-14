@@ -7,6 +7,7 @@
 
 ;; Triggers
 (define-trigger db:connected ()
+  "Creates the database tables if they don't already exist."
   (db:create 'comic '((comic-id (:varchar 16))
                       (comic-name (:varchar 128))
                       (author (:varchar 64))
@@ -24,10 +25,12 @@
 
 ;; Pages
 (define-page index #@"/" (:lquery (template "main.ctml"))
+  "The front page of the site."
   (r-clip:process T))
 
 (define-page comic #@"/comic(/[a-zA-Z]+)?(/[0-9]+)?" (:uri-groups (comic-id page-number)
-                                                     :lquery (template "comic.ctml"))
+                                                      :lquery (template "comic.ctml"))
+  "The web page for displaying a web comic page."
   (r-clip:process
    T
    :comic-id (if (< 0 (length comic-id))
@@ -38,11 +41,13 @@
                     "0"))) ;; latest page default
 
 (define-page admin #@"/admin" (:lquery (template "admin.ctml"))
+  "The admin console user interface."
   (r-clip:process T)) ;; TODO: authentication stuffs
 
 ;; User API
 
 (define-api comic/page (comic-id page-number) ()
+  "API interface for getting metadata for a comic page."
   (let ((comic-id (or* comic-id "default"))
         (page-number (or* page-number "latest")))
     (case (http-method *request*)
@@ -50,18 +55,27 @@
        (api-output
         (dm:get-one 'comic-page (db:query (:and (:= 'comic-id comic-id)
                                                 (:= 'page-number page-number))))))
-      (T (error (format nil "Request type ~(~a~) not supported." (http-method *request*)))))))
+      (T (wrong-method-error (http-method *request*))))))
 
 ;; Admin API
 
 (define-api admin/comic/page () () ;; TODO: authentication checks here
-  (api-output
-   (alexandria:plist-hash-table
-    '(:teapot "short and stout"))))
+  "API interface for adding metadata for a new page to a comic."
+  (case (http-method *request*)
+    (:post
+     (api-output
+      (alexandria:plist-hash-table
+       '(:teapot "short and stout"))))
+    (T (wrong-method-error (http-method *request*)))))
 
 ;; Other functions
 
+(defun wrong-method-error (method)
+  "Throws an error with a message informing this is an unsupported request method."
+  (error (format nil "Request type ~(~a~) not supported." method)))
+
 (lquery:define-lquery-function reader-template (node object)
+  "Adds content from a different template."
   (setf (plump:children node) (plump:make-child-array))
   (plump:parse (template (format NIL "~(~a~).ctml" object)) :root node)
   node)
