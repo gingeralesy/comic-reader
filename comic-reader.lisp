@@ -62,7 +62,7 @@
                                                    (:= 'page-number page-number)
                                                    (:<= 'publish-time time-now))))
                                :sort '((publish-time :DESC)))))
-         (unless (or page (<= (publish-time page) time-now))
+         (unless (and page (<= (publish-time page) time-now))
            (error 'request-not-found :message "Comic page does not exist."))
          (api-output page))))
       (T (wrong-method-error (http-method *request*))))))
