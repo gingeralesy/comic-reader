@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8"/>
+    <title><c:splice lquery="(text comic-id)"/> - Comic Reader</title>
+    <c:splice lquery="(reader-template :stylesheets)"/>
+    <!-- CSS specific to this page -->
+  </head>
+  <body>
+    <c:splice lquery="(reader-template :header)"/>
+
+    <input type="hidden" id="comic-id" val="" lquery="(val comic-id)" />
+    <input type="hidden" id="page-number" val="" lquery="(val page-number)" />
+
+    <!-- Content for this template -->
+    <div id="content" >
+      <div id="reader" class="outlined">
+        <p>This is where I will test the comic reader</p>
+      </div>
+
+      <div id="artist-commentary" class="outlined text-box">
+        <p>This is where commentary about the current comic page will go once I get that far.</p>
+        <p>I'm not going to bother with the look of the website until all functionality is there.</p>
+      </div>
+      
+      <div id="comments" class="outlined text-box">
+        <p>Pretend there's a comments box here. I'll probably use Disqus so people won't have to make accounts.</p>
+      </div>
+    </div>
+
+    <c:splice lquery="(reader-template :footer)"/>
+
+    <!-- Scripts specific to this page -->
+    <script type="text/javascript" src="../js/comicReader.jquery.js" @src="/static/comic-reader/js/comicReader.jquery.js"></script>
+    <script type="text/javascript" src="../js/comic.js" @src="/static/comic-reader/js/comic.js"></script>
+  </body>
+</html>

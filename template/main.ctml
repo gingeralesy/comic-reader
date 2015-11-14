@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Comic Reader by gingerale</title>
+    <c:splice lquery="(reader-template :stylesheets)"/>
+  </head>
+  <body>
+    <c:splice lquery="(reader-template :header)"/>
+
+    <!-- Content for this template -->
+    <div id="content" >
+      Hello there!
+    </div>
+
+    <c:splice lquery="(reader-template :footer)"/>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+<!-- Footer content -->
+
+<!-- Javascript start here -->
+<!-- Third-party libraries -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Comic Reader libraries -->
+<!-- TODO: these will be baked into a single minified .js file -->
+<script type="text/javascript" src="../js/global.js" @src="/static/comic-reader/js/global.js"></script>
