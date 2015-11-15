@@ -1,6 +1,6 @@
 (in-package #:rad-user)
-(define-module #:org.gingeralesy.web.comic-reader
-  (:nicknames #:comic-reader)
+(define-module #:comic-reader
+  (:nicknames #:org.gingeralesy.web.comic-reader)
   (:use #:cl #:radiance)
   (:domain "comic"))
 (in-package #:org.gingeralesy.web.comic-reader)
