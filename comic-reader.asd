@@ -4,7 +4,6 @@
   :class "radiance:module"
   :components ((:file "module")
                (:file "db")
-               (:file "main")
                (:file "comic")
                (:file "admin"))
   :depends-on ((:interface :database)
