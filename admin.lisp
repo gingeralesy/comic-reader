@@ -5,15 +5,24 @@
                                                :lquery (template "admin-create-comic.ctml"))
   (with-actions (error info)
       ((:save
-        (setf (config-tree :comic :title) (post-var "title")
-              (config-tree :comic :description) (post-var "description")
-              (config-tree :comic :cover-uri) (post-var "cover-uri")
-              (config-tree :comic :is-default) (post-var "is-default"))))
+        (let ((comic-id (post-var "comic-id"))
+              (comic-name (post-var "comic-name"))
+              (cover-uri (or* (post-var "cover-uri")))
+              (description (or* (post-var "description")))
+              (is-default (when (or* (post-var "is-default"))
+                            (ratify:perform-test :boolean (post-var "is-default"))))
+              (author (auth:current)))
+          (unless author (error 'api-auth-error :message "Missing user!"))
+          (unless (cl-ppcre:scan "^[\\w-_]+$" comic-id)
+            (error 'api-argument-invalid :message "Invalid comic URL path."))
+          (unless comic-name (error 'api-argument-missing :message "Comic name not provided!"))
+          (when cover-uri (ratify:perform-test :url cover-uri))
+          (set-comic comic-id comic-name (user:username author)
+                     cover-uri description :is-default is-default))))
     (r-clip:process
-     T :error error :info info)))
+     T :error error :info info :comics (comics))))
 
 (admin:define-panel debug-comic comic-reader (:access (perm admin comic)
                                               :tooltip "This is a debug panel."
                                               :lquery (template "admin-debug.ctml"))
-  (r-clip:process
-   T))
+  (r-clip:process T))

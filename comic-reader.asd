@@ -11,4 +11,6 @@
                (:interface :user)
                (:interface :admin)
                :r-clip
-               :i-json))
+               :i-json
+               :cl-ppcre
+               :ratify))

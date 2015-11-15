@@ -1,23 +1,48 @@
 <div>
-  <h2>Comic Creation</h2>
+  <h2>Existing Comics</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:splice iterate="comics">
+        <tr>
+          <td lquery="(text (comic-id *))"></td>
+          <td lquery="(text (comic-name *))"></td>
+          <td lquery="(text (description *))"></td>
+          <td lquery="(text (is-default *))"></td>
+        </tr>
+      </c:splice>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+
+<div>
+  <h2>Add or Update Comic</h2>
   <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
   <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
   <form action="#" method="post" class="box">
-    <label for="title">Title</label>
-    <input type="text"  name="title" placeholder="Comic Title" required
-           lquery="(val (config-tree :comic :title))" /><br/>
+    <label for="id" >URL path</label>
+    <input type="text" name="title" placeholder="Comic URL path" required /><br/>
+    
+    <label for="comic-name">Title</label>
+    <input type="text" name="comic-name" placeholder="Comic Title" required /><br/>
 
     <label for="description">Description</label>
-    <input type="text" name="description" placeholder="A happy little comic." required
-           lquery="(val (config-tree :comic :description))" /><br/>
+    <input type="text" name="description" placeholder="A happy little comic." required /><br/>
 
     <label for="cover-uri" >Cover URL</label>
-    <input type="text"  name="cover-uri"
-           lquery="(val (config-tree :comic :cover-uri))" /><br/>
+    <input type="text" name="cover-uri" required /><br/>
 
     <label for="is-default" >Default</label>
-    <input type="checkbox" name="is-default"
-           lquery="(attr :checked (config-tree :comic :is-default))" /><br/>
+    <input type="checkbox" name="is-default" val="true" /><br/>
     
     <div class="actionbar">
       <input type="submit" name="action" value="Save" />
