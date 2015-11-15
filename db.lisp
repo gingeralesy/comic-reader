@@ -40,7 +40,7 @@
       (let ((default-comic (comic)))
         (when default-comic
           (db:update 'comic (db:query (:= 'is-default 1))
-                     (alexandria:plist-hash-table `(:is-default ,is-default))))))
+                     (alexandria:plist-hash-table `(:is-default 0))))))
     (if old-comic
         (db:update 'comic (db:query (:= 'comic-id comic-id)) field-values)
         (db:insert 'comic field-values))))
