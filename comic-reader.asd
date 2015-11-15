@@ -10,6 +10,7 @@
                (:interface :data-model)
                (:interface :user)
                (:interface :admin)
+               :alexandria
                :r-clip
                :i-json
                :cl-ppcre
