@@ -5,6 +5,7 @@
   (db:create 'comic '((comic-id (:varchar 16))
                       (comic-name (:varchar 128))
                       (author (:varchar 64))
+                      (cover-uri (:varchar 128))
                       (description :text)
                       (read-direction (:integer 1))
                       (is-default (:integer 1))))

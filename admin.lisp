@@ -1,14 +1,12 @@
 (in-package #:org.gingeralesy.web.comic-reader)
 
-(define-page admin #@"comic/admin" (:lquery (template "admin.ctml"))
-  "The admin console user interface."
-  (r-clip:process T)) ;; TODO: authentication stuffs
-
-(define-api admin/comic/page () () ;; TODO: authentication checks here
-  "API interface for adding metadata for a new page to a comic."
-  (case (http-method *request*)
-    (:post
-     (api-output
-      (alexandria:plist-hash-table
-       '(:teapot "short and stout"))))
-    (T (wrong-method-error (http-method *request*)))))
+(admin:define-panel create-comic comic-reader
+    (:access (perm comic-reader admin comic)) :tooltip "Manage your comics." :lquery (template "admin-create-comic.ctml")
+  (with-actions (error info)
+      ((:save
+        (setf (config-tree :comic :title) (post-var "title")
+              (config-tree :comic :description) (post-var "description")
+              (config-tree :comic :cover-uri) (post-var "cover-uri")
+              (config-tree :comic :is-default) (post-var "is-default"))))
+    (r-clip:process
+     T :error error :info info)))
