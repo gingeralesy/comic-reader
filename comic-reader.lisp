@@ -12,6 +12,7 @@
                       (comic-name (:varchar 128))
                       (author (:varchar 64))
                       (description :text)
+                      (read-direction (:integer 1))
                       (is-default (:integer 1))))
   (db:create 'comic-page '((comic-id :id)
                            (page-number (:integer 4))
@@ -89,7 +90,7 @@
 
 (defun wrong-method-error (method)
   "Throws an error with a message informing this is an unsupported request method."
-  (error 'api-call-not-found :message (format nil "Request type ~(~a~) not supported." method)))
+  (error 'api-call-not-found :message (format nil "Request type ~:@(~a~) not supported." method)))
 
 (lquery:define-lquery-function reader-template (node object)
   "Adds content from a different template."
