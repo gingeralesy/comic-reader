@@ -2,9 +2,14 @@
 (asdf:defsystem #:comic-reader
   :defsystem-depends-on (:radiance :lass)
   :class "radiance:module"
-  :components ((:file "comic-reader")
-               (:lass-file "static/css/style"))
-  :depends-on (:r-clip
-               :i-json
-               (:interface :database)
-               (:interface :data-model)))
+  :components ((:file "module")
+               (:file "db")
+               (:file "main")
+               (:file "comic")
+               (:file "admin"))
+  :depends-on ((:interface :database)
+               (:interface :data-model)
+               (:interface :user)
+               (:interface :admin)
+               :r-clip
+               :i-json))
