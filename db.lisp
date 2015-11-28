@@ -27,7 +27,8 @@
                                   (or (string= read-direction "left")
                                       (eql read-direction :left)))
                              1 0))
-         (is-default (if (or* is-default) 1 0))
+         (is-default (if (or (not (comics)) (string= is-default "true"))
+                         1 0))
          (old-comic (comic comic-id))
          (field-values (alexandria:plist-hash-table `(:comic-id ,comic-id
                                                       :comic-name ,comic-name
@@ -40,7 +41,7 @@
       (let ((default-comic (comic)))
         (when default-comic
           (db:update 'comic (db:query (:= 'is-default 1))
-                     (alexandria:plist-hash-table `(:is-default 0))))))
+                     (alexandria:plist-hash-table '(:is-default 0))))))
     (if old-comic
         (db:update 'comic (db:query (:= 'comic-id comic-id)) field-values)
         (db:insert 'comic field-values))))

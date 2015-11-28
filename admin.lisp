@@ -16,7 +16,7 @@
           (unless (cl-ppcre:scan "^[\\w-_]+$" comic-id)
             (error 'api-argument-invalid :message "Invalid comic URL path."))
           (unless comic-name (error 'api-argument-missing :message "Comic name not provided!"))
-          (when cover-uri (ratify:perform-test :url cover-uri))
+          (when (or* cover-uri) (ratify:perform-test :url cover-uri))
           (set-comic comic-id comic-name (user:username author)
                      cover-uri description :is-default is-default))))
     (r-clip:process

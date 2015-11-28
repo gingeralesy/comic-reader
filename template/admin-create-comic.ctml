@@ -30,7 +30,7 @@
   <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
   <form action="#" method="post" class="box">
     <label for="id" >URL path</label>
-    <input type="text" name="title" placeholder="Comic URL path" required /><br/>
+    <input type="text" name="comic-id" placeholder="Comic URL path" required /><br/>
     
     <label for="comic-name">Title</label>
     <input type="text" name="comic-name" placeholder="Comic Title" required /><br/>
