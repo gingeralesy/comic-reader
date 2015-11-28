@@ -25,7 +25,7 @@
 (admin:define-panel manage-comic comic-reader (:access (perm author)
                                                :tooltip "Manage a specific comic."
                                                :lquery (template "admin-manage-comic.ctml"))
-  (let* ((comic-id (when (or* (get-var "comic")) (parse-integer (get-var "comic") :junk-allowed T)))
+  (let* ((comic-id (int-get-var "comic"))
          (comic (when (or* comic-id) (comic :id comic-id)))
          (pages (when comic (pages (dm:field comic '_id) :up-to-time NIL)))
          (author (if (auth:current) (user:username (auth:current))
@@ -40,9 +40,9 @@
 (admin:define-panel manage-comic-pages comic-reader (:access (perm author)
                                                      :tooltip "Manage a specific page of a comic."
                                                      :lquery (template "admin-manage-page.ctml"))
-  (let* ((comic-id (when (or* (get-var "comic")) (parse-integer (get-var "comic") :junk-allowed T)))
+  (let* ((comic-id (int-get-var "comic"))
          (comic (when (or* comic-id) (comic :id comic-id)))
-         (page-num (when (or* (get-var "page")) (parse-integer (get-var "page") :junk-allowed T)))
+         (page-num (int-get-var "page"))
          (pages (when comic (pages (dm:field comic '_id) :up-to-time NIL)))
          (page (when (or* page-num) (page (dm:field comic '_id) :page-number page-num :up-to-time NIL)))
          (author (if (auth:current) (user:username (auth:current))
@@ -54,3 +54,7 @@
        :comic comic
        :pages pages
        :page page)))
+
+(defun int-get-var (var-name)
+  (when (and var-name (or* (get-var var-name)))
+    (parse-integer (get-var var-name) :junk-allowed T)))
