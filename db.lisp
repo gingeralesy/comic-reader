@@ -23,11 +23,12 @@
 (defun set-comic (comic-id comic-name author cover-uri
                   description &key read-direction is-default)
   "Adds a new comic to the database or updates an old one."
-  (let* ((read-direction (if (and read-direction
+  (let* ((default-comic (comic))
+         (read-direction (if (and read-direction
                                   (or (string= read-direction "left")
                                       (eql read-direction :left)))
                              1 0))
-         (is-default (if (or (not (comics)) (string= is-default "true"))
+         (is-default (if (or (not default-comic) (string= is-default "true"))
                          1 0))
          (old-comic (comic comic-id))
          (field-values (alexandria:plist-hash-table `(:comic-id ,comic-id
@@ -38,10 +39,9 @@
                                                       :read-direction ,read-direction
                                                       :is-default ,is-default))))
     (when (= 1 is-default)
-      (let ((default-comic (comic)))
-        (when default-comic
-          (db:update 'comic (db:query (:= 'is-default 1))
-                     (alexandria:plist-hash-table '(:is-default 0))))))
+      (when default-comic
+        (db:update 'comic (db:query (:= 'is-default 1))
+                   (alexandria:plist-hash-table '(:is-default 0)))))
     (if old-comic
         (db:update 'comic (db:query (:= 'comic-id comic-id)) field-values)
         (db:insert 'comic field-values))))

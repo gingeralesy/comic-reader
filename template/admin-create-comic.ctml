@@ -12,10 +12,10 @@
     <tbody>
       <c:splice iterate="comics">
         <tr>
-          <td lquery="(text (comic-id *))"></td>
-          <td lquery="(text (comic-name *))"></td>
-          <td lquery="(text (description *))"></td>
-          <td lquery="(text (is-default *))"></td>
+          <td lquery="(text comic-id)"></td>
+          <td lquery="(text comic-name)"></td>
+          <td lquery="(text description)"></td>
+          <td lquery="(text is-default)"></td>
         </tr>
       </c:splice>
     </tbody>
