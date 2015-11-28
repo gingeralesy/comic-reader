@@ -22,8 +22,8 @@
     (:get
      (let* ((comic (comic :path (or* comic-path)))
             (page-number (when (or* page-number) (parse-integer page-number :junk-allowed T)))
-            (page (page (_id comic) page-number)))
-       (unless (and page (<= (publish-time page) (get-universal-time)))
+            (page (page (dm:field comic '_id) :page-number page-number)))
+       (unless (and page (<= (dm:field page 'publish-time) (get-universal-time)))
          (error 'request-not-found :message "Comic page does not exist."))
        (api-output page)))
     (T (wrong-method-error (http-method *request*)))))

@@ -2,7 +2,9 @@
   <h2>Comics</h2>
   <c:splice iterate="comics">
     <div>
-      <a href="#" lquery='(attr :href (format NIL "manage-comic?id=~a" _id)) (text comic-name)'></a>
+      <a href="#comic-management"
+         @href='(#?"admin/manage-comic?id={0}#comic-management" _id)'
+         lquery="(text comic-name)">COMIC</a>
     </div>
   </c:splice>
 </div>
@@ -11,7 +13,7 @@
   <c:using value="comic">
     <hr/>
 
-    <div>
+    <div id="comic-management">
       <h2>Manage comic</h2>
       <form action="#" method="post" class="box">
         <label for="id" >URL path</label>

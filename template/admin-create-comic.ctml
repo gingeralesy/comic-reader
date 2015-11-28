@@ -14,7 +14,9 @@
         <tr>
           <td lquery="(text comic-path)"></td>
           <td>
-            <a href="#" lquery='(attr :href (format NIL "manage-comic?id=~a" _id)) (text comic-name)'></a>
+            <a href="#"
+               @href='(#?"admin/manage-comic?id={0}#comic-management" _id)'
+               lquery="(text comic-name)">COMIC</a>
           </td>
           <td lquery="(text description)"></td>
           <td lquery='(text (when (= 1 is-default) "&#x2713;"))'></td>

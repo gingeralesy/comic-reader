@@ -1,6 +1,6 @@
 (in-package #:org.gingeralesy.web.comic-reader)
 
-(admin:define-panel create-comic comic-reader (:access (perm admin author)
+(admin:define-panel create-comic comic-reader (:access (perm author)
                                                :tooltip "Manage your comics."
                                                :lquery (template "admin-create-comic.ctml"))
   (with-actions (error info)
@@ -11,8 +11,8 @@
               (description (or* (post-var "description")))
               (is-default (when (or* (post-var "is-default"))
                             (string= "true" (ratify:perform-test :boolean (post-var "is-default")))))
-              (author (auth:current)))
-          (unless author (error 'api-auth-error :message "Missing user!"))
+              (author (if (auth:current) (user:username (auth:current))
+                          (error 'api-auth-error :message "Missing user!"))))
           (unless (cl-ppcre:scan "^[\\w-_]+$" comic-path)
             (error 'api-argument-invalid :message "Invalid comic URL path."))
           (unless comic-name (error 'api-argument-missing :message "Comic name not provided!"))
@@ -20,11 +20,37 @@
           (set-comic comic-path comic-name (user:username author)
                      cover-uri description :is-default is-default))))
     (r-clip:process
-     T :error error :info info :comics (comics))))
+     T :error error :info info :comics (comics (user:username (auth:current))))))
 
-(admin:define-panel manage-comic comic-reader (:access (perm admin author)
+(admin:define-panel manage-comic comic-reader (:access (perm author)
                                                :tooltip "Manage a specific comic."
                                                :lquery (template "admin-manage-comic.ctml"))
-  (let ((comic-id (get-var "id")))
+  (let* ((comic-id (when (or* (get-var "comic")) (parse-integer (get-var "comic") :junk-allowed T)))
+         (comic (when (or* comic-id) (comic :id comic-id)))
+         (pages (when comic (pages (dm:field comic '_id) :up-to-time NIL)))
+         (author (if (auth:current) (user:username (auth:current))
+                     (error 'api-auth-error :message "Missing user!"))))
+    (when (and comic (not (string= author (dm:field comic 'author))))
+      (error 'api-auth-error :message "You may only manage your own comics."))
     (r-clip:process
-     T :comics (comics) :comic (when (or* comic-id) (comic :id (parse-integer comic-id))))))
+     T :comics (comics author)
+       :comic comic
+       :pages pages)))
+
+(admin:define-panel manage-comic-pages comic-reader (:access (perm author)
+                                                     :tooltip "Manage a specific page of a comic."
+                                                     :lquery (template "admin-manage-page.ctml"))
+  (let* ((comic-id (when (or* (get-var "comic")) (parse-integer (get-var "comic") :junk-allowed T)))
+         (comic (when (or* comic-id) (comic :id comic-id)))
+         (page-num (when (or* (get-var "page")) (parse-integer (get-var "page") :junk-allowed T)))
+         (pages (when comic (pages (dm:field comic '_id) :up-to-time NIL)))
+         (page (when (or* page-num) (page (dm:field comic '_id) :page-number page-num :up-to-time NIL)))
+         (author (if (auth:current) (user:username (auth:current))
+                     (error 'api-auth-error :message "Missing user!"))))
+    (when (and comic (not (string= author (dm:field comic 'author))))
+      (error 'api-auth-error :message "You may only manage your own comics."))
+    (r-clip:process
+     T :comics (comics (user:username (auth:current)))
+       :comic comic
+       :pages pages
+       :page page)))
