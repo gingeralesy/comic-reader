@@ -15,7 +15,7 @@
           <td lquery="(text comic-id)"></td>
           <td lquery="(text comic-name)"></td>
           <td lquery="(text description)"></td>
-          <td lquery="(text is-default)"></td>
+          <td lquery='(text (when (= 1 is-default) "&#x2713;"))'></td>
         </tr>
       </c:splice>
     </tbody>
