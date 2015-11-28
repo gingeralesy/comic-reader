@@ -3,7 +3,7 @@
   <table>
     <thead>
       <tr>
-        <th>ID</th>
+        <th>URL path</th>
         <th>Title</th>
         <th>Description</th>
         <th>Default</th>
@@ -12,8 +12,10 @@
     <tbody>
       <c:splice iterate="comics">
         <tr>
-          <td lquery="(text comic-id)"></td>
-          <td lquery="(text comic-name)"></td>
+          <td lquery="(text comic-path)"></td>
+          <td>
+            <a href="#" lquery='(attr :href (format NIL "manage-comic?id=~a" _id)) (text comic-name)'></a>
+          </td>
           <td lquery="(text description)"></td>
           <td lquery='(text (when (= 1 is-default) "&#x2713;"))'></td>
         </tr>
@@ -30,7 +32,7 @@
   <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
   <form action="#" method="post" class="box">
     <label for="id" >URL path</label>
-    <input type="text" name="comic-id" placeholder="Comic URL path" required /><br/>
+    <input type="text" name="comic-path" placeholder="Comic URL path" required /><br/>
     
     <label for="comic-name">Title</label>
     <input type="text" name="comic-name" placeholder="Comic Title" required /><br/>

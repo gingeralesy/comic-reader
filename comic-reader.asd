@@ -9,9 +9,12 @@
   :depends-on ((:interface :database)
                (:interface :data-model)
                (:interface :user)
+               (:interface :auth)
                (:interface :admin)
+               (:interface :profile)
                :alexandria
                :r-clip
+               :lquery
                :i-json
                :cl-ppcre
                :ratify))
