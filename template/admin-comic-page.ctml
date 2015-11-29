@@ -22,6 +22,10 @@
  #content .smallbox {
    max-width: 480px;
  }
+
+ .hidden {
+   display: none;
+ }
 </style>
 
 <c:if test="comic" >
@@ -31,10 +35,11 @@
       <div id="pages" class="tablebox">
         <h3>Comic Pages</h3>
         <table class="actions">
-          <thead>
+          <thead onclick='collapse($(this).parent().find("tbody"));'>
             <tr>
               <th>Page number</th>
               <th>Published</th>
+              <th>Title</th>
               <th>Image URL</th>
               <th>Actions</th>
             </tr>
@@ -43,7 +48,8 @@
             <c:splice iterate="pages">
               <tr>
                 <th lquery="(text page-number)">PAGE NUMBER</th>
-                <th lquery='(text (unless (and publish-time (< (get-universal-time) publish-time)) "&#x2713;"))'></th>
+                <th lquery='(text (unless (and publish-time (< publish-time (get-universal-time))) "&#x2713;"))'></th>
+                <th lquery="(text title)">PAGE TITLE</th>
                 <th><a href="#" lquery="(text image-uri) (attr :href image-uri)">IMAGE URL</a></th>
                 <th>
                   <form action="#page-management" method="get" >
@@ -144,3 +150,12 @@
     </div>
   </c:else>
 </c:if>
+
+<script>
+ function collapse(element) {
+   if (element.hasClass("hidden"))
+     element.removeClass("hidden");
+   else
+     element.addClass("hidden");
+ }
+</script>
