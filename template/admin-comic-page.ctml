@@ -26,52 +26,49 @@
 
 <c:if test="comic" >
   <c:then>
-    <div class="smallbox">
+    <div>
       <h2 lquery="(text (dm:field comic 'comic-name))">COMIC</h2>
       <div id="pages" class="tablebox">
         <h3>Comic Pages</h3>
-        <c:if test="pages">
-          <c:then>
-            <table class="actions">
-              <thead>
-                <tr>
-                  <th>Page number</th>
-                  <th>Actions</th>
-                  <th>Image URL</th>
-                  <th>Published</th>
-                </tr>
-              </thead>
-              <tbody>
-                <c:splice iterate="pages">
-                  <tr>
-                    <th lquery="(text page-number)">PAGE NUMBER</th>
-                    <th>
-                      <form action="#page-management" method="get" >
-                        <input type="submit" action="Edit"/>
-                        <a href="#" class="button"
-                           @href='(#?"comic/comic/{0}/{1}" (dm:field comic :comic-path) page-number)'>
-                          View
-                        </a>
-                      </form>
-                    </th>
-                    <th lquery="(text image-uri)">IMAGE URL</th>
-                    <th lquery='(text (when (< (get-universal-time) publish-time) "&#x2713;"))'></th>
-                  </tr>
-                </c:splice>
-              </tbody>
-            </table>
-          </c:then>
-          <c:else>No pages yet</c:else>
-        </c:if>
+        <table class="actions">
+          <thead>
+            <tr>
+              <th>Page number</th>
+              <th>Published</th>
+              <th>Image URL</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <c:splice iterate="pages">
+              <tr>
+                <th lquery="(text page-number)">PAGE NUMBER</th>
+                <th lquery='(text (unless (and publish-time (< (get-universal-time) publish-time)) "&#x2713;"))'></th>
+                <th><a href="#" lquery="(text image-uri) (attr :href image-uri)">IMAGE URL</a></th>
+                <th>
+                  <form action="#page-management" method="get" >
+                    <input type="hidden" name="comic" value="" lquery="(val comic-id)"/>
+                    <input type="hidden" name="page" value="" lquery="(val page-number)"/>
+                    <input type="submit" name="action" value="Edit"/>
+                    <a href="#" class="button"
+                       @href='(#?"comic/comic/{0}/{1}" (dm:field (** :comic) :comic-path) page-number)'>
+                      View
+                    </a>
+                  </form>
+                </th>
+              </tr>
+            </c:splice>
+          </tbody>
+        </table>
       </div>
 
-      <div id="page-management">
+      <div id="page-management" class="smallbox">
         <h3>Add page</h3>
         <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
         <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
         <form action="#" method="post" class="box">
           <input type="hidden" name="comic-id" value=""
-                 lquery="(val (if page (dm:field page comic-id) (dm:field comic '_id)))"/>
+                 lquery="(val (if page (dm:field page 'comic-id) (dm:field comic '_id)))"/>
 
           <label for="page-number">Page number</label>
           <input type="text" name="page-number" placeholder="Comic page number"
@@ -111,7 +108,6 @@
           <div class="actionbar">
             <input type="submit" name="action" value="Save" />
             <input type="submit" name="action" value="Clear" />
-            <input type="submit" name="action" value="Delete" />
           </div>
         </form>
       </div>

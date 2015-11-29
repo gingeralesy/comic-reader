@@ -37,8 +37,9 @@
                                               :title "Comic Pages"
                                               :tooltip "Manage a specific page of a comic."
                                               :lquery (template "admin-comic-page.ctml"))
-  (let* ((comic-id (int-get-var "comic"))
-         (page-num (int-get-var "page"))
+  (let* ((comic-id (or (int-post-var "comic-id") (int-get-var "comic")))
+         (page-num (or (int-post-var "page-number") (int-get-var "page")))
+         (comics (comics (user:username (auth:current))))
          (comic (when comic-id (comic :id comic-id)))
          (pages (when comic (pages (dm:field comic '_id) :up-to-time NIL)))
          (page (when page-num (page (dm:field comic '_id) :page-number page-num :up-to-time NIL)))
@@ -67,9 +68,11 @@
             (set-page comic-id page-number image-uri
                       :title title :commentary commentary
                       :publish-time publish-time :tags tags
-                      :transcript transcript :thumb-uri thumb-uri))))
+                      :transcript transcript :thumb-uri thumb-uri)
+            (unless (page comic-id :page-number page-number :up-to-time NIL)
+              (error 'api-error :message "Failed to save page into database.")))))
       (r-clip:process
-       T :comics (comics (user:username (auth:current)))
+       T :comics comics
          :comic comic
          :pages pages
          :page page))))

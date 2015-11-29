@@ -90,18 +90,21 @@
 (defun set-page (comic-id page-number image-uri
                  &key title commentary (publish-time (get-universal-time))
                       tags transcript thumb-uri)
-  (unless (comic :id comic-id) (error 'database-invalid-field :message "Invalid comic specified."))
-  (let ((old-page (page comic-id :page-number page-number))
-        (field-values (alexandria:plist-hash-table `(:comic-id ,comid-id
-                                                     :page-number ,page-number
-                                                     :title ,title
-                                                     :commentary ,commentary
-                                                     :creation-time ,(get-universal-time)
-                                                     :publish-time ,publish-time
-                                                     :tags ,tags
-                                                     :transcript ,transcript
-                                                     :image-uri ,image-uri
-                                                     :thumb-uri ,thumb-uri))))
+  (unless (comic :id comic-id)
+    (error 'database-invalid-field :message "Invalid comic specified."))
+  (let* ((old-page (page comic-id :page-number page-number))
+         (field-values (alexandria:plist-hash-table `(:comic-id ,comic-id
+                                                      :page-number ,page-number
+                                                      :title ,title
+                                                      :commentary ,commentary
+                                                      :creation-time ,(if old-page
+                                                                          (dm:field old-page 'creation-time)
+                                                                          (get-universal-time))
+                                                      :publish-time ,publish-time
+                                                      :tags ,tags
+                                                      :transcript ,transcript
+                                                      :image-uri ,image-uri
+                                                      :thumb-uri ,thumb-uri))))
     (if old-page
         (db:update 'comic-page
                    (db:query (:and (:= 'comic-id comic-id)
