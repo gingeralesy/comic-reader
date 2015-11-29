@@ -1,0 +1,87 @@
+<c:when test="comics" >
+  <div>
+    <h2>Comics</h2>
+    <ul>
+      <c:splice iterate="comics">
+        <li>
+          <a href="#page-creation"
+             @href='(#?"admin/comic-reader/comic-page?comic={0}#page-creation" _id)'
+             lquery='(text comic-name)'>COMIC</a>
+        </li>
+      </c:splice>
+    </ul>
+  </div>
+</c:when>
+
+<c:when test="comic" >
+  <div>
+    <hr/>
+    <h2 lquery="(text (dm:field comic 'comic-name))">COMIC</h2>
+  </div>
+
+  <c:when test="pages">
+    <div>
+      <h3>Comic Pages</h3>
+      <ul>
+        <c:splice iterate="pages">
+          <li>
+            <a href="#page-management"
+               @href='(#?"admin/comic-reader/comic-page?comic={0}&page={1}#page-management" comic-id page-number)'
+               lquery='(text (format NIL "Page ~a" page-number))'>PAGE</a>
+          </li>
+        </c:splice>
+      </ul>
+    </div>
+  </c:when>
+
+  <div id="page-creation">
+    <h3>Add page</h3>
+    <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
+    <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
+    <form action="#" method="post" class="box">
+      <input type="hidden" name="comic-id" value=""
+             lquery="(val (if page (dm:field page comic-id) (dm:field comic '_id)))"/>
+
+      <label for="page-number">Page number</label>
+      <input type="text" name="page-number" placeholder="Comic page number"
+             lquery="(val (if page (dm:field page 'page-number) (length pages)))" required /><br/>
+
+      <label for="thumb-uri">Page image</label>
+      <input type="text" name="image-uri"
+             placeholder="Address to the comic page image."
+             lquery="(val (when page (dm:field page 'image-uri)))" required /><br/>
+
+      <label for="thumb-url">Page thumbnail</label>
+      <input type="text" name="thumb-uri"
+             placeholder="Address to the comic page thumbnail image."
+             lquery="(val (when page (dm:field page 'thumb-uri)))" /><br/>
+
+      <label for="title" >Title</label>
+      <input type="text" name="title" placeholder="Page title"
+             lquery="(val (when page (dm:field page 'title)))" /><br/>
+
+      <label for="publish-time" >Publish time</label>
+      <input type="text" name="publish-time"
+             placeholder="TODO: make this into a calendar to pick the date from"
+             lquery="(val (when page (dm:field page 'publish-time)))" /><br/>
+
+      <label for="tags" >Tags</label>
+      <input type="text" name="tags" placeholder="Tags separated with commas"
+             lquery="(val (when page (dm:field page 'tags)))" /><br/>
+
+      <label for="commentary" >Commentary</label>
+      <textarea name="commentary" placeholder="Artist's commentary"
+                lquery="(val (when page (dm:field page 'commentary)))" ></textarea><br/>
+
+      <label for="transcript" >Transcript</label>
+      <textarea name="transcript" placeholder="Transcript of the comic"
+                lquery="(val (when page (dm:field page 'transcript)))" ></textarea>
+      
+      <div class="actionbar">
+        <input type="submit" name="action" value="Save" />
+        <input type="submit" name="action" value="Clear" />
+        <input type="submit" name="action" value="Delete" />
+      </div>
+    </form>
+  </div>
+</c:when>
