@@ -13,8 +13,8 @@
                    (error 'request-not-found :message "Comic page does not exist."))))
     (r-clip:process
      T
-     :comic-id (dm:field comic '_id)
-     :page-number (dm:field page 'page-number))))
+     :comic comic
+     :page page)))
 
 (define-api comic/page (comic-id page-number) ()
   "API interface for getting metadata for a comic page."
