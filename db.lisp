@@ -88,19 +88,21 @@
               :sort '((publish-time :DESC))))
 
 (defun set-page (comic-id page-number image-uri
-                 &key title commentary (publish-time (get-universal-time))
+                 &key title commentary publish-time
                       tags transcript thumb-uri)
   (unless (comic :id comic-id)
     (error 'database-invalid-field :message "Invalid comic specified."))
   (let* ((old-page (page comic-id :page-number page-number))
+         (creation-time (if old-page
+                            (dm:field old-page 'creation-time)
+                            (get-universal-time)))
          (field-values (alexandria:plist-hash-table `(:comic-id ,comic-id
                                                       :page-number ,page-number
                                                       :title ,title
                                                       :commentary ,commentary
-                                                      :creation-time ,(if old-page
-                                                                          (dm:field old-page 'creation-time)
-                                                                          (get-universal-time))
-                                                      :publish-time ,publish-time
+                                                      :creation-time ,creation-time
+                                                      :publish-time ,(or publish-time
+                                                                         creation-time)
                                                       :tags ,tags
                                                       :transcript ,transcript
                                                       :image-uri ,image-uri
