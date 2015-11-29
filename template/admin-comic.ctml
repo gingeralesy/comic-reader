@@ -1,24 +1,55 @@
-<div>
+<style>
+ #content .tablebox a.button {
+   font-family:		Cantarell;
+   font-weight:		700;
+   text-align:		center;
+   text-decoration:	none;
+   color:		white;
+   background-color:	#0088EE;
+   border-color:	#0088EE;
+   border-style:	solid;
+   border-width:	0px 8px 1px 2px;
+   padding-left:	2px;
+   box-sizing:		border-box;
+   cursor:		pointer;
+ }
+
+ #content .tablebox a.button:hover {
+   background-color:	#00EEFF;
+   border-color:	#00EEFF;
+ }
+
+ #content .smallbox {
+   max-width: 480px;
+ }
+</style>
+
+<div class="tablebox smallbox">
   <h2>Existing Comics</h2>
-  <table>
+  <table class="actions">
     <thead>
       <tr>
+        <th>Actions</th>
         <th>URL path</th>
         <th>Title</th>
-        <th>Description</th>
         <th>Default</th>
       </tr>
     </thead>
     <tbody>
       <c:splice iterate="comics">
         <tr>
-          <td lquery="(text comic-path)">PATH</td>
           <td>
-            <a href="#comic-management"
-               @href='(#?"admin/comic-reader/comic?comic={0}#comic-management" _id)'
-               lquery="(text comic-name)">COMIC</a>
+            <form action="#" method="get">
+              <input type="hidden" name="comic" value="" lquery="(val _id)"/>
+              <input type="submit" name="action" value="Edit"/>
+              <a href="#" @href='(#?"admin/comic-reader/comic-pages?comic={0}#pages" _id)'
+                 class="button">
+                Pages
+              </a>
+            </form>
           </td>
-          <td lquery="(text description)">DESCRIPTION</td>
+          <td lquery="(text comic-path)">PATH</td>
+          <td lquery="(text comic-name)">COMIC</td>
           <td lquery='(text (when (= 1 is-default) "&#x2713;"))'></td>
         </tr>
       </c:splice>
@@ -28,7 +59,7 @@
 
 <hr/>
 
-<div id="comic-management">
+<div id="comic-management" class="smallbox">
   <h2>Manage Comic</h2>
   <c:when test="error"><div class="notice error" lquery="(text error)"></div></c:when>
   <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>

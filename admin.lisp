@@ -1,9 +1,9 @@
 (in-package #:org.gingeralesy.web.comic-reader)
 
-(admin:define-panel comic comic-reader (:access (perm author)
-                                        :icon "comments-o"
-                                        :tooltip "Manage your comics."
-                                        :lquery (template "admin-comic.ctml"))
+(admin:define-panel comics comic-reader (:access (perm author)
+                                         :icon "comments-o"
+                                         :tooltip "Manage your comics."
+                                         :lquery (template "admin-comic.ctml"))
   (let* ((comic-id (int-get-var "comic"))
          (comic (when comic-id (comic :id comic-id)))
          (pages (when comic (pages (dm:field comic '_id) :up-to-time NIL)))
@@ -46,12 +46,38 @@
                      (error 'api-auth-error :message "Missing user!"))))
     (when (and comic (not (string= author (dm:field comic 'author))))
       (error 'api-auth-error :message "You may only manage your own comics."))
-    (r-clip:process
-     T :comics (comics (user:username (auth:current)))
-       :comic comic
-       :pages pages
-       :page page)))
+    (with-actions (error info)
+        ((:save
+          (let ((comic-id (int-post-var "comic-id"))
+                (page-number (int-post-var "page-number"))
+                (image-uri (or* (post-var "image-uri")))
+                (thumb-uri (or* (post-var "thumb-uri")))
+                (title (or* (post-var "title")))
+                (publish-time (int-post-var "publish-time"))
+                (tags (or* (post-var "tags")))
+                (commentary (or* (post-var "commentary")))
+                (transcript (or* (post-var "transcript"))))
+            (unless (comic :id comic-id)
+              (error 'api-argument-invalid :message "Invalid comic."))
+            (unless page-number
+              (error 'api-argument-missing :message "Page number is not defined."))
+            (if image-uri
+                (ratify:perform-test :url image-uri)
+                (error 'api-argument-missing :message "Page image is not defined."))
+            (set-page comic-id page-number image-uri
+                      :title title :commentary commentary
+                      :publish-time publish-time :tags tags
+                      :transcript transcript :thumb-uri thumb-uri))))
+      (r-clip:process
+       T :comics (comics (user:username (auth:current)))
+         :comic comic
+         :pages pages
+         :page page))))
 
 (defun int-get-var (var-name)
   (when (and var-name (or* (get-var var-name)))
     (parse-integer (get-var var-name) :junk-allowed T)))
+
+(defun int-post-var (var-name)
+  (when (and var-name (or* (post-var var-name)))
+    (parse-integer (post-var var-name) :junk-allowed T)))
