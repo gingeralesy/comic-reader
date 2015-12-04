@@ -14,13 +14,12 @@
 
     <!-- Content for this template -->
     <div id="content" >
-      <div id="reader" class="outlined">
-        <p>This is where I will test the comic reader</p>
-      </div>
+      <div id="reader" class="outlined"
+           lquery="(css :background-image (dm:field page 'image-uri))"/>
 
       <div id="artist-commentary" class="outlined text-box">
         <p>This is where commentary about the current comic page will go once I get that far.</p>
-        <p>I'm not going to bother with the look of the website until all functionality is there.</p>
+        <p>I'm not going to bother with the look of the website yet.</p>
       </div>
       
       <div id="comments" class="outlined text-box">
