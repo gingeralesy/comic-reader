@@ -17,4 +17,5 @@
                :lquery
                :i-json
                :cl-ppcre
-               :ratify))
+               :ratify
+               :lass))
