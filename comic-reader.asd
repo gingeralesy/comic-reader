@@ -12,6 +12,7 @@
                (:interface :auth)
                (:interface :admin)
                (:interface :profile)
+               :radiance
                :alexandria
                :r-clip
                :lquery
