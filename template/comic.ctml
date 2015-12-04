@@ -15,7 +15,7 @@
     <!-- Content for this template -->
     <div id="content" >
       <div id="reader" class="outlined">
-        <div class="reader-page-wrapper"
+        <div class="page-wrapper"
              lquery="(css :background-image (dm:field page 'image-uri))"/>
       </div>
 
