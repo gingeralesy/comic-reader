@@ -14,8 +14,10 @@
 
     <!-- Content for this template -->
     <div id="content" >
-      <div id="reader" class="outlined"
-           lquery="(css :background-image (dm:field page 'image-uri))"/>
+      <div id="reader" class="outlined">
+        <div class="reader-page-wrapper"
+             lquery="(css :background-image (dm:field page 'image-uri))"/>
+      </div>
 
       <div id="artist-commentary" class="outlined text-box">
         <p>This is where commentary about the current comic page will go once I get that far.</p>
