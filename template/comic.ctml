@@ -32,7 +32,9 @@
     <c:splice lquery="(reader-template :footer)"/>
 
     <!-- Scripts specific to this page -->
-    <script type="text/javascript" src="../js/comicReader.jquery.js" @src="/static/comic-reader/js/comicReader.jquery.js"></script>
-    <script type="text/javascript" src="../js/comic.js" @src="/static/comic-reader/js/comic.js"></script>
+    <script type="text/javascript" src="../js/comicReader.jquery.js"
+            @src="/static/comic-reader/js/comicReader.jquery.js"></script>
+    <script type="text/javascript" src="../js/comic.js"
+            @src="/static/comic-reader/js/comic.js"></script>
   </body>
 </html>

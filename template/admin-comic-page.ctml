@@ -151,7 +151,7 @@
   </c:else>
 </c:if>
 
-<script>
+<script type="text/javascript">
  function collapse(element) {
    if (element.hasClass("hidden"))
      element.removeClass("hidden");
