@@ -9,26 +9,29 @@
       animating : false,
       curPage : pageNum
     });
-    
-    this.empty();
-    $("<div>",{ 
-      "class": "previous-page hidden"
-    }).appendTo(this);
-    $("<div>",{
-      "class": "current-page"
-    }).appendTo(this);
-    $("<div>",{
-      "class": "next-page hidden"
-    }).appendTo(this);
 
     var readerEl = this;
-    getComic(comicID,function (data) {
-      readerEl.data(CREADER).comic = data;
+    getComic(comicID,function (resp) {
+      readerEl.data(CREADER).comic = resp.data;
     });
 
-    getComicPage(comicID,pageNum,function(data) {
-      readerEl.data(CREADER).pageCache["page-number"] = data;
-      readerEl.find(".current-page").css("background-image", data["image-uri"]);
+    getComicPage(comicID,pageNum,function(resp) {
+      if (resp && resp.data && resp.data.imageUri) {
+        readerEl.empty();
+        $("<div>",{ 
+          "class": "previous-page hidden"
+        }).appendTo(readerEl);
+        $("<div>",{
+          "class": "current-page"
+        }).appendTo(readerEl);
+        $("<div>",{
+          "class": "next-page hidden"
+        }).appendTo(readerEl);
+
+        readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;
+        readerEl.find(".current-page").css("background-image",
+                                           "url(" + resp.data.imageUri + ")");
+      }
     });
     
     return this;
@@ -40,20 +43,20 @@
   };
 
   var nextPage = function() {
-    if (isAnimating.apply(this))
+    if (isBusy.apply(this))
       return;
     this.data(CREADER).curPage += 1;
     return this;
   };
 
   var prevPage = function() {
-    if (isAnimating.apply(this))
+    if (isBusy.apply(this))
       return;
     this.data(CREADER).curPage -= 1;
     return this;
   };
 
-  var isAnimating = function() {
+  var isBusy = function() {
     return this.data(CREADER).animating;
   };
 
@@ -122,8 +125,8 @@
       return nextPage.apply(this);
     if (action === "prevPage" || action === "previousPage")
       return prevPage.apply(this);
-    if (action === "isAnimating")
-      return isAnimating.apply(this);
+    if (action === "isBusy")
+      return isBusy.apply(this);
     throw new Error("Invalid action: " + action);
   };
 }(jQuery));
