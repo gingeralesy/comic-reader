@@ -16,11 +16,14 @@
  :margin auto
  :background-color black
  (.page-wrapper
-   :width 100%
-   :height 100%))
+  :width 100%
+  :height 100%))
 
 (.outlined
  :border 1px solid black)
 
 (.text-box
  :padding 16px)
+
+(.hidden
+ :display "none")

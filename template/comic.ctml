@@ -9,13 +9,14 @@
   <body>
     <c:splice lquery="(reader-template :header)"/>
 
-    <input type="hidden" id="comic-id" val="" lquery="(val comic-id)" />
-    <input type="hidden" id="page-number" val="" lquery="(val page-number)" />
+    <input type="hidden" id="comic-id" val="" lquery="(val (dm:field page 'comic-id))" />
+    <input type="hidden" id="page-number" val="" lquery="(val (dm:field page 'page-number))" />
+    <input type="hidden" id="image-uri" val="" lquery="(val (dm:field page 'image-uri))" />
 
     <!-- Content for this template -->
     <div id="content" >
       <div id="reader" class="outlined">
-        <div class="page-wrapper"
+        <div class="current-page"
              lquery="(css :background-image (dm:field page 'image-uri))"/>
       </div>
 

@@ -1,5 +1,5 @@
 $(function() {
-  var comicID = $("#comic-id").val();
+  var comicID = Number.parseInt($("#comic-id").val());
   var initialPage = Number.parseInt($("#page-number").val());
   var body = $("body");
   var reader = $("#reader");

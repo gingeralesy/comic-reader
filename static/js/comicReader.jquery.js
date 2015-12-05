@@ -2,28 +2,34 @@
   var CREADER = "creader";
 
   // --- Constructor ---
-  var init = function(comicID, initialPage) {
+  var init = function(comicID,pageNum) {
     this.data(CREADER, {
-      comicID : comicID,
+      comic : {},
       pageCache : {},
       animating : false,
-      curPage : initialPage ? initialPage : 0
+      curPage : pageNum
     });
+    
     this.empty();
     $("<div>",{ 
-      "class": "previous-page",
-      id : comicID + "-prev"
+      "class": "previous-page hidden"
     }).appendTo(this);
     $("<div>",{
-      "class": "current-page",
-      id : comicID + "-curr"
+      "class": "current-page"
     }).appendTo(this);
     $("<div>",{
-      "class": "next-page",
-      id : comicID + "-next"
+      "class": "next-page hidden"
     }).appendTo(this);
 
-    loadPage.apply(this, [initialPage]);
+    var readerEl = this;
+    getComic(comicID,function (data) {
+      readerEl.data(CREADER).comic = data;
+    });
+
+    getComicPage(comicID,pageNum,function(data) {
+      readerEl.data(CREADER).pageCache["page-number"] = data;
+      readerEl.find(".current-page").css("background-image", data["image-uri"]);
+    });
     
     return this;
   };
@@ -55,7 +61,7 @@
   // -- main private interface --
   var loadPage = function(pageNum) {
     var reader = this;
-    var comicID = this.data(CREADER).comicID;
+    var comicID = this.data(CREADER).comic.id;
 
     if (!reader.data(CREADER).pageCache[pageNum]) {
       getComicPage(comicID,pageNum,function (resp) {
@@ -71,6 +77,12 @@
   };
   
   // -- ajax call interface --
+  var getComic = function(comicID,success,error,complete) {
+    sendGetRequest("/api/comic", {
+      "comic-id" : comicID
+    }, success, error, complete);
+  };
+  
   var getComicPage = function(comicID,pageNum,success,error,complete) {
     sendGetRequest("/api/comic/page", {
       "comic-id" : comicID,
@@ -95,9 +107,9 @@
 
   // --- jQuery plugin extension ---
   $.fn.creader = function() {
-    // Need to do this because arguments is immutable
     var args = [];
     $.each(arguments, function (i,v) {
+      // Need to do this because arguments is immutable
       args.push(v);
     });
     
