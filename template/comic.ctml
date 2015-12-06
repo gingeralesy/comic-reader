@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title><c:splice lquery="(text comic-id)"/> - Comic Reader</title>
     <c:splice lquery="(reader-template :stylesheets)"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" @href="/static/comic-reader/css/comicReader.css"/>
     <!-- CSS specific to this page -->
   </head>
   <body>
