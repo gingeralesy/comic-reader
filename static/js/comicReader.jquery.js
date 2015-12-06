@@ -1,5 +1,8 @@
 (function($) {
   var CREADER = "creader";
+  var CUR_PAGE_ID = "current-page";
+  var NEXT_PAGE_ID = "next-page";
+  var PREV_PAGE_ID = "previous-page"
 
   // --- Constructor ---
   var init = function(comicID,pageNum) {
@@ -14,10 +17,10 @@
     getComic(comicID,function (resp) {
       readerEl.data(CREADER).comic = resp.data;
       
-      fetchAndSetPage.apply(readerEl,[pageNum,"current-page",true]);
-      fetchAndSetPage.apply(readerEl,[pageNum + 1,"next-page"]);
+      fetchAndSetPage.apply(readerEl,[pageNum,CUR_PAGE_ID,true]);
+      fetchAndSetPage.apply(readerEl,[pageNum + 1,NEXT_PAGE_ID]);
       if (pageNum > 0)
-        fetchAndSetPage.apply(readerEl,[pageNum - 1,"previous-page"]);
+        fetchAndSetPage.apply(readerEl,[pageNum - 1,PREV_PAGE_ID]);
     });
 
     return this;
@@ -83,11 +86,17 @@
 
   var setTranscript = function(transcript) {
     this.find("#transcript").remove();
-    $("<div>",{
-      id: "transcript",
-      "class": "hidden comic-transcript",
-      text : resp.data.transcript
-    }).appendTo(this);
+    if (transcript) {
+      $("<div>",{
+        id: "transcript",
+        "class": "hidden comic-transcript",
+        text : transcript
+      }).append($("<h3>",{
+        text : "Comic Transcript"
+      })).append($("<p>",{
+        text : transcript
+      })).appendTo(this);
+    }
   };
   
   // -- ajax call interface --
