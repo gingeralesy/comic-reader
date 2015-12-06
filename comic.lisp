@@ -30,3 +30,12 @@
          (error 'request-not-found :message "Comic page does not exist."))
        (api-output page)))
     (T (wrong-method-error (http-method *request*)))))
+
+(lquery:define-lquery-function image-metadata (node comic page)
+  "Adds the attribute fields to an img element to display a comic page."
+  (lquery:$ node
+    (attr :src (dm:field page :image-uri)
+          :title (or* (dm:field page :title)
+                      (format NIL "~a - Page ~a"
+                              (dm:field comic :comic-name)
+                              (dm:field page :page-number))))))

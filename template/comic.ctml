@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8"/>
-    <title><c:splice lquery="(text comic-id)"/> - Comic Reader</title>
+    <title><c:splice lquery="(text (dm:field comic 'comic-name))"/> - Comic Reader</title>
     <c:splice lquery="(reader-template :stylesheets)"/>
     <link rel="stylesheet" type="text/css" href="../css/style.css"
           @href="/static/comic-reader/css/comicReader.css"/>
@@ -20,11 +20,7 @@
     <div id="content" >
       <div id="reader" class="outlined">
         <img id="current-page" class="comic-page" src="" alt="comic page"
-             lquery='(attr :src (dm:field page :image-uri)
-                           :title (or* (dm:field page :title)
-                                       (format NIL "~a - Page ~a"
-                                               (dm:field comic :comic-name)
-                                               (dm:field page :page-number))))'/>
+             lquery="(image-metadata comic page)"/>
       </div>
 
       <div id="artist-commentary" class="outlined text-box">
