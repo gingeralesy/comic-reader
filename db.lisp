@@ -18,7 +18,8 @@
                            (tags :text)
                            (transcript :text)
                            (image-uri (:varchar 128))
-                           (thumb-uri (:varchar 128)))))
+                           (thumb-uri (:varchar 128))
+                           (double-page (:integer 1)))))
 
 (defun comics (&optional author)
   "Gets all of the comics. All of them. Or just for an author."
@@ -89,7 +90,7 @@
 
 (defun set-page (comic-id page-number image-uri
                  &key title commentary publish-time
-                      tags transcript thumb-uri)
+                      tags transcript thumb-uri double-page)
   (unless (comic :id comic-id)
     (error 'database-invalid-field :message "Invalid comic specified."))
   (let* ((old-page (page comic-id :page-number page-number))
@@ -106,7 +107,8 @@
                                                       :tags ,tags
                                                       :transcript ,transcript
                                                       :image-uri ,image-uri
-                                                      :thumb-uri ,thumb-uri))))
+                                                      :thumb-uri ,thumb-uri
+                                                      :double-page ,(if double-page 1 0)))))
     (if old-page
         (db:update 'comic-page
                    (db:query (:and (:= 'comic-id comic-id)

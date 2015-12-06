@@ -23,8 +23,10 @@
   "API interface for getting metadata for a comic page."
   (case (http-method *request*)
     (:get
-     (let* ((comic (comic :id (when (or* comic-id) (parse-integer comic-id :junk-allowed T))))
-            (page-number (when (or* page-number) (parse-integer page-number :junk-allowed T)))
+     (let* ((comic (comic :id (when (or* comic-id)
+                                (parse-integer comic-id :junk-allowed T))))
+            (page-number (when (or* page-number)
+                           (parse-integer page-number :junk-allowed T)))
             (page (page (dm:field comic '_id) :page-number page-number)))
        (unless (and page (<= (dm:field page 'publish-time) (get-universal-time)))
          (error 'request-not-found :message "Comic page does not exist."))
