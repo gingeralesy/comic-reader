@@ -18,14 +18,17 @@
     getComicPage(comicID,pageNum,function(resp) {
       if (resp && resp.data && resp.data.imageUri) {
         readerEl.empty();
-        $("<div>",{ 
-          "class": "previous-page hidden"
+        $("<div>",{
+          id: "previous-page",
+          "class": "hidden comic-page"
         }).appendTo(readerEl);
         $("<div>",{
-          "class": "current-page"
+          id: "current-page",
+          "class": "comic-page"
         }).appendTo(readerEl);
         $("<div>",{
-          "class": "next-page hidden"
+          id: "next-page",
+          "class": "hidden comic-page"
         }).appendTo(readerEl);
 
         readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;

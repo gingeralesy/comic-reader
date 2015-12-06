@@ -27,3 +27,7 @@
 
 (.hidden
  :display "none")
+
+(.comic-page
+ :width 100%
+ :height 100%)
