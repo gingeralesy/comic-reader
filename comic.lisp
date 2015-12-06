@@ -26,7 +26,7 @@
      (let ((comic (comic :id (when (or* comic-id)
                                (parse-integer comic-id :junk-allowed T)))))
        (unless comic (error 'request-not-found :message "Comic does not exist."))
-       (api-output comic)))
+       (api-output (comic-hash-table comic))))
     (T (wrong-method-error (http-method *request*)))))
 
 (define-api comic/page (comic-id page-number) ()
@@ -40,7 +40,7 @@
             (page (page (dm:id comic) :page-number page-number)))
        (unless (and page (<= (dm:field page 'publish-time) (get-universal-time)))
          (error 'request-not-found :message "Comic page does not exist."))
-       (api-output page)))
+       (api-output (page-hash-table page))))
     (T (wrong-method-error (http-method *request*)))))
 
 (lquery:define-lquery-function image-metadata (node comic page)

@@ -29,6 +29,17 @@
               (db:query :all))
           :sort '((_id :ASC))))
 
+(defun comic-hash-table (comic)
+  "Converts the comic data model into a hash-table."
+  (alexandria:plist-hash-table `(:id ,(dm:id comic)
+                                 :comic-path ,(dm:field comic 'comic-path)
+                                 :comic-name ,(dm:field comic 'comic-name)
+                                 :author ,(dm:field comic 'author)
+                                 :cover-uri ,(dm:field comic 'cover-uri)
+                                 :description ,(dm:field comic 'description)
+                                 :read-direction ,(dm:field comic 'read-direction)
+                                 :is-default ,(dm:field comic 'is-default))))
+
 (defun comic (&key path id)
   "Gets a specific or the default comic."
   (let ((path (or* path)))
@@ -73,6 +84,21 @@
                               (:<= 'publish-time up-to-time)))
               (db:query (:= 'comic-id comic-id)))
           :sort '((publish-time :DESC))))
+
+(defun page-hash-table (page)
+  "Converts the page data model into a hash-table."
+  (alexandria:plist-hash-table `(:id ,(dm:id page)
+                                 :comic-id ,(dm:field page 'comic-id)
+                                 :page-number ,(dm:field page 'page-number)
+                                 :title ,(dm:field page 'title)
+                                 :commentary ,(dm:field page 'commentary)
+                                 :creation-time ,(dm:field page 'creation-time)
+                                 :publish-time ,(dm:field page 'publish-time)                                               
+                                 :tags ,(dm:field page 'tags)
+                                 :transcript ,(dm:field page 'transcript)
+                                 :image-uri ,(dm:field page 'image-uri)
+                                 :thumb-uri ,(dm:field page 'thumb-uri)
+                                 :double-page ,(dm:field page 'double-page))))
 
 (defun page (comic-id &key page-number (up-to-time (get-universal-time)))
   "Gets the specific page of a comic or the latest one."

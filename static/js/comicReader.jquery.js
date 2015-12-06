@@ -50,14 +50,14 @@
   // -- main private interface --
   var fetchAndSetPage = function(pageNum,elementId,addTranscript) {
     var readerEl = this;
-    var comicID = readerEl.data(CREADER).comic._id;
+    var comicID = readerEl.data(CREADER).comic.id;
     if (!readerEl.data(CREADER).pageCache[pageNum]) {
       getComicPage(comicID,pageNum,function(resp) {
         if (resp && resp.data && resp.data.imageUri) {
-          setPage.apply(this,[resp.data,elementId]);
+          setPage.apply(readerEl,[resp.data,elementId]);
           
           if (addTranscript && resp.data.transcript)
-            setTranscript.apply(this,[resp.data.transcript]);
+            setTranscript.apply(readerEl,[resp.data.transcript]);
           
           readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;
         }
@@ -65,9 +65,9 @@
     } else {
       var page = readerEl.data(CREADER).pageCache[pageNum];
       if (page && page.imageUri) {
-        setPage.apply(this,[page,elementId]);
+        setPage.apply(readerEl,[page,elementId]);
         if (addTranscript && page.transcript)
-          setTranscript.apply(this,[page.transcript]);
+          setTranscript.apply(readerEl,[page.transcript]);
       }
     }
   };
