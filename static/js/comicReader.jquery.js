@@ -31,6 +31,11 @@
           id: "next-page",
           "class": "hidden comic-page"
         }).appendTo(readerEl);
+        $("<div>",{
+          id: "transcript",
+          "class": "hidden comic-transcript",
+          text : resp.data.transcript
+        });
 
         readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;
       }

@@ -19,6 +19,7 @@
     <!-- Content for this template -->
     <div id="content" >
       <div id="reader" class="outlined">
+        <div id="transcript" class="hidden" lquery="(text (dm:field page 'transcript))" />
         <img id="current-page" class="comic-page" src="" alt="comic page"
              lquery="(image-metadata comic page)"/>
       </div>
