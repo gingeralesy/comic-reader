@@ -38,4 +38,5 @@
           :title (or* (dm:field page :title)
                       (format NIL "~a - Page ~a"
                               (dm:field comic :comic-name)
-                              (dm:field page :page-number))))))
+                              (dm:field page :page-number)))))
+  node)
