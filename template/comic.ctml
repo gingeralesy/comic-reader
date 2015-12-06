@@ -4,20 +4,24 @@
     <meta charset="UTF-8"/>
     <title><c:splice lquery="(text comic-id)"/> - Comic Reader</title>
     <c:splice lquery="(reader-template :stylesheets)"/>
-    <link rel="stylesheet" type="text/css" href="../css/style.css" @href="/static/comic-reader/css/comicReader.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/style.css"
+          @href="/static/comic-reader/css/comicReader.css"/>
     <!-- CSS specific to this page -->
   </head>
   <body>
     <c:splice lquery="(reader-template :header)"/>
 
-    <input type="hidden" id="comic-id" val="" lquery="(val (dm:field page 'comic-id))" />
-    <input type="hidden" id="page-number" val="" lquery="(val (dm:field page 'page-number))" />
+    <input type="hidden" id="comic-id" val=""
+           lquery="(val (dm:field page 'comic-id))" />
+    <input type="hidden" id="page-number" val=""
+           lquery="(val (dm:field page 'page-number))" />
 
     <!-- Content for this template -->
     <div id="content" >
       <div id="reader" class="outlined">
-        <img id="current-page" class="comic-page" src=""
-             lquery='(attr :src (dm:field page :image-uri))'/>
+        <img id="current-page" class="comic-page" src="" alt="comic page"
+             lquery='(attr :src (dm:field page :image-uri) 
+                           :alt (or* (dm:field page :title) "comic page"))'/>
       </div>
 
       <div id="artist-commentary" class="outlined text-box">
