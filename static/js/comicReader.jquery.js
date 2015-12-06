@@ -18,22 +18,21 @@
     getComicPage(comicID,pageNum,function(resp) {
       if (resp && resp.data && resp.data.imageUri) {
         readerEl.empty();
-        $("<div>",{
+        $("<img>",{
           id: "previous-page",
           "class": "hidden comic-page"
         }).appendTo(readerEl);
-        $("<div>",{
+        $("<img>",{
           id: "current-page",
-          "class": "comic-page"
+          "class": "comic-page",
+          src: resp.data.imageUri
         }).appendTo(readerEl);
-        $("<div>",{
+        $("<img>",{
           id: "next-page",
           "class": "hidden comic-page"
         }).appendTo(readerEl);
 
         readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;
-        readerEl.find(".current-page").css("background-image",
-                                           "url(" + resp.data.imageUri + ")");
       }
     });
     

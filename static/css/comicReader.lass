@@ -3,6 +3,7 @@
  :height 1018px
  :margin auto
  :background-color black
+ :overflow hidden
  (.comic-page
   :width 100%
   :height 100%))

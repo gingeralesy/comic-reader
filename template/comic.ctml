@@ -16,8 +16,8 @@
     <!-- Content for this template -->
     <div id="content" >
       <div id="reader" class="outlined">
-        <div id="current-page" class="comic-page"
-             lquery='(css :background-image (format NIL "url(~a)" (dm:field page :image-uri)))'/>
+        <img id="current-page" class="comic-page" src=""
+             lquery='(attr :src (dm:field page :image-uri))'/>
       </div>
 
       <div id="artist-commentary" class="outlined text-box">
