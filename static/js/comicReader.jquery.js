@@ -13,10 +13,11 @@
     var readerEl = this;
     getComic(comicID,function (resp) {
       readerEl.data(CREADER).comic = resp.data;
-      fetchAndSetPage.apply(readerEl,[pareNum,"current-page",true]);
-      fetchAndSetPage.apply(readerEl,[pareNum + 1,"next-page"]);
+      
+      fetchAndSetPage.apply(readerEl,[pageNum,"current-page",true]);
+      fetchAndSetPage.apply(readerEl,[pageNum + 1,"next-page"]);
       if (pageNum > 0)
-        fetchAndSetPage.apply(readerEl,[pareNum - 1,"previous-page"]);
+        fetchAndSetPage.apply(readerEl,[pageNum - 1,"previous-page"]);
     });
 
     return this;
@@ -49,6 +50,7 @@
   // -- main private interface --
   var fetchAndSetPage = function(pageNum,elementId,addTranscript) {
     var readerEl = this;
+    var comicID = readerEl.data(CREADER).comic._id;
     if (!readerEl.data(CREADER).pageCache[pageNum]) {
       getComicPage(comicID,pageNum,function(resp) {
         if (resp && resp.data && resp.data.imageUri) {

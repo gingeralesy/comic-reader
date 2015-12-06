@@ -10,7 +10,7 @@
   "The web page for displaying a web comic page."
   (let* ((comic (or (comic :path comic-path)
                     (error 'request-not-found :message "Invalid comic requested.")))
-         (page (or (page (dm:field comic '_id)
+         (page (or (page (dm:id comic)
                          :page-number (when (or* page-number)
                                         (parse-integer page-number :junk-allowed T)))
                    (error 'request-not-found :message "Comic page does not exist."))))
@@ -18,6 +18,16 @@
      T
      :comic comic
      :page page)))
+
+(define-api comic (comic-id) ()
+  "API interface for getting metadata for a comic"
+  (case (http-method *request*)
+    (:get
+     (let ((comic (comic :id (when (or* comic-id)
+                               (parse-integer comic-id :junk-allowed T)))))
+       (unless comic (error 'request-not-found :message "Comic does not exist."))
+       (api-output comic)))
+    (T (wrong-method-error (http-method *request*)))))
 
 (define-api comic/page (comic-id page-number) ()
   "API interface for getting metadata for a comic page."
@@ -27,7 +37,7 @@
                                 (parse-integer comic-id :junk-allowed T))))
             (page-number (when (or* page-number)
                            (parse-integer page-number :junk-allowed T)))
-            (page (page (dm:field comic '_id) :page-number page-number)))
+            (page (page (dm:id comic) :page-number page-number)))
        (unless (and page (<= (dm:field page 'publish-time) (get-universal-time)))
          (error 'request-not-found :message "Comic page does not exist."))
        (api-output page)))

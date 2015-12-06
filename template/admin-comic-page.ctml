@@ -74,7 +74,7 @@
         <c:when test="info"><div class="notice info" lquery="(text info)"></div></c:when>
         <form action="#" method="post" class="box">
           <input type="hidden" name="comic-id" value=""
-                 lquery="(val (if page (dm:field page 'comic-id) (dm:field comic '_id)))"/>
+                 lquery="(val (if page (dm:field page 'comic-id) (dm:id comic)))"/>
 
           <label for="page-number">Page number</label>
           <input type="text" name="page-number" placeholder="Comic page number"
