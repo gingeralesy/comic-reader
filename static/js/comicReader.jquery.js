@@ -13,34 +13,12 @@
     var readerEl = this;
     getComic(comicID,function (resp) {
       readerEl.data(CREADER).comic = resp.data;
+      fetchAndSetPage.apply(readerEl,[pareNum,"current-page",true]);
+      fetchAndSetPage.apply(readerEl,[pareNum + 1,"next-page"]);
+      if (pageNum > 0)
+        fetchAndSetPage.apply(readerEl,[pareNum - 1,"previous-page"]);
     });
 
-    getComicPage(comicID,pageNum,function(resp) {
-      if (resp && resp.data && resp.data.imageUri) {
-        readerEl.empty();
-        $("<img>",{
-          id: "previous-page",
-          "class": "hidden comic-page"
-        }).appendTo(readerEl);
-        $("<img>",{
-          id: "current-page",
-          "class": "comic-page",
-          src: resp.data.imageUri
-        }).appendTo(readerEl);
-        $("<img>",{
-          id: "next-page",
-          "class": "hidden comic-page"
-        }).appendTo(readerEl);
-        $("<div>",{
-          id: "transcript",
-          "class": "hidden comic-transcript",
-          text : resp.data.transcript
-        });
-
-        readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;
-      }
-    });
-    
     return this;
   };
 
@@ -69,39 +47,59 @@
 
   // --- Private API ---
   // -- main private interface --
-  var loadPage = function(pageNum) {
-    var reader = this;
-    var comicID = this.data(CREADER).comic.id;
-
-    if (!reader.data(CREADER).pageCache[pageNum]) {
-      getComicPage(comicID,pageNum,function (resp) {
-        var data = resp.data;
-        if (data) {
-          reader.data(CREADER).pageCache[pageNum] = data;
+  var fetchAndSetPage = function(pageNum,elementId,addTranscript) {
+    var readerEl = this;
+    if (!readerEl.data(CREADER).pageCache[pageNum]) {
+      getComicPage(comicID,pageNum,function(resp) {
+        if (resp && resp.data && resp.data.imageUri) {
+          setPage.apply(this,[resp.data,elementId]);
+          
+          if (addTranscript && resp.data.transcript)
+            setTranscript.apply(this,[resp.data.transcript]);
+          
+          readerEl.data(CREADER).pageCache[resp.data.pageNumber] = resp.data;
         }
-        console.log(data);
-      }, function(jqXHR, textStatus, errorThrown) {
-        alert("Failed to load page" + pageNum + ": " + textStatus + ": " + errorThrown);
       });
+    } else {
+      var page = readerEl.data(CREADER).pageCache[pageNum];
+      if (page && page.imageUri) {
+        setPage.apply(this,[page,elementId]);
+        if (addTranscript && page.transcript)
+          setTranscript.apply(this,[page.transcript]);
+      }
     }
+  };
+
+  var setPage = function(page,elementId) {
+    this.find("#" + elementId).remove();
+    $("<img>",{
+      id: elementId,
+      "class": "comic-page",
+      src: page.imageUri
+    }).appendTo(this);
+  };
+
+  var setTranscript = function(transcript) {
+    this.find("#transcript").remove();
+    $("<div>",{
+      id: "transcript",
+      "class": "hidden comic-transcript",
+      text : resp.data.transcript
+    }).appendTo(this);
   };
   
   // -- ajax call interface --
   var getComic = function(comicID,success,error,complete) {
-    sendGetRequest("/api/comic", {
+    sendRequest("/api/comic", "GET", {
       "comic-id" : comicID
     }, success, error, complete);
   };
   
   var getComicPage = function(comicID,pageNum,success,error,complete) {
-    sendGetRequest("/api/comic/page", {
+    sendRequest("/api/comic/page", "GET", {
       "comic-id" : comicID,
       "page-number" : pageNum
     }, success, error, complete);
-  };
-  
-  var sendGetRequest = function(url,parameters,success,error,complete) {
-    sendRequest(url,"GET",parameters,success,error,complete);
   };
   
   var sendRequest = function(url,method,message,success,error,complete) {
