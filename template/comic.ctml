@@ -20,8 +20,11 @@
     <div id="content" >
       <div id="reader" class="outlined">
         <img id="current-page" class="comic-page" src="" alt="comic page"
-             lquery='(attr :src (dm:field page :image-uri) 
-                           :alt (or* (dm:field page :title) "comic page"))'/>
+             lquery='(attr :src (dm:field page :image-uri)
+                           :title (or* (dm:field page :title)
+                                       (format NIL "~a - Page ~a"
+                                               (dm:field comic :comic-name)
+                                               (dm:field page :page-number))))'/>
       </div>
 
       <div id="artist-commentary" class="outlined text-box">
