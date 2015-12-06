@@ -18,9 +18,7 @@
                 (comic-name (post-var "comic-name"))
                 (cover-uri (or* (post-var "cover-uri")))
                 (description (or* (post-var "description")))
-                (is-default (when (or* (post-var "is-default"))
-                              (string= (ratify:perform-test :boolean (post-var "is-default"))
-                                       "true"))))
+                (is-default (boolean-post-var "is-default")))
             (unless (cl-ppcre:scan "^[\\w-_]+$" comic-path)
               (error 'api-argument-invalid :message "Invalid comic URL path."))
             (unless comic-name
@@ -61,7 +59,8 @@
                 (publish-time (int-post-var "publish-time"))
                 (tags (or* (post-var "tags")))
                 (commentary (or* (post-var "commentary")))
-                (transcript (or* (post-var "transcript"))))
+                (transcript (or* (post-var "transcript")))
+                (double-page (boolean-post-var "double-page")))
             (unless (comic :id comic-id)
               (error 'api-argument-invalid :message "Invalid comic."))
             (unless page-number
@@ -72,7 +71,8 @@
             (set-page comic-id page-number image-uri
                       :title title :commentary commentary
                       :publish-time publish-time :tags tags
-                      :transcript transcript :thumb-uri thumb-uri)
+                      :transcript transcript :thumb-uri thumb-uri
+                      :double-page double-page)
             (unless (page comic-id :page-number page-number :up-to-time NIL)
               (error 'api-error :message "Failed to save page into database.")))))
       (r-clip:process
@@ -88,3 +88,8 @@
 (defun int-post-var (var-name)
   (when (and var-name (or* (post-var var-name)))
     (parse-integer (post-var var-name) :junk-allowed T)))
+
+(defun boolean-post-var (var-name)
+  (when (and var-name (or* (post-var var-name)))
+    (string= (ratify:perform-test :boolean (string-downcase (post-var var-name)))
+             "true")))
