@@ -11,7 +11,7 @@
   (let* ((comic (or (comic :path comic-path)
                     (error 'request-not-found :message "Invalid comic requested.")))
          (page (or (page (dm:id comic)
-                         :page-number (when (or* page-number)
+                         :page-number (when page-number
                                         (parse-integer page-number :junk-allowed T)))
                    (error 'request-not-found :message "Comic page does not exist."))))
     (r-clip:process
@@ -23,7 +23,7 @@
   "API interface for getting metadata for a comic"
   (case (http-method *request*)
     (:get
-     (let ((comic (comic :id (when (or* comic-id)
+     (let ((comic (comic :id (when comic-id
                                (parse-integer comic-id :junk-allowed T)))))
        (unless comic (error 'request-not-found :message "Comic does not exist."))
        (api-output (comic-hash-table comic))))
@@ -33,9 +33,9 @@
   "API interface for getting metadata for a comic page."
   (case (http-method *request*)
     (:get
-     (let* ((comic (comic :id (when (or* comic-id)
+     (let* ((comic (comic :id (when comic-id
                                 (parse-integer comic-id :junk-allowed T))))
-            (page-number (when (or* page-number)
+            (page-number (when page-number
                            (parse-integer page-number :junk-allowed T)))
             (page (page (dm:id comic) :page-number page-number)))
        (unless (and page (<= (dm:field page 'publish-time) (get-universal-time)))
