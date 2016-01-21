@@ -98,7 +98,7 @@
                                  :transcript ,(dm:field page 'transcript)
                                  :image-uri ,(dm:field page 'image-uri)
                                  :thumb-uri ,(dm:field page 'thumb-uri)
-                                 :double-page ,(dm:field page 'double-page))))
+                                 :double-page ,(= 1 (dm:field page 'double-page)))))
 
 (defun page (comic-id &key page-number (up-to-time (get-universal-time)))
   "Gets the specific page of a comic or the latest one."
