@@ -11,17 +11,34 @@
   <body>
     <c:splice lquery="(reader-template :header)"/>
 
-    <input type="hidden" id="comic-id" val=""
-           lquery="(val (dm:field page 'comic-id))" />
-    <input type="hidden" id="page-number" val=""
-           lquery="(val (dm:field page 'page-number))" />
-
+    <c:using value="comic">
+      <input type="hidden" id="comic-data"
+             lquery="(data :id (dm:id *)
+                           :path (dm:field * 'comic-path)
+                           :name (dm:field * 'comic-name)
+                           :author (dm:field * 'author)
+                           :cover (dm:field * 'cover-uri)
+                           :description (dm:field * 'description))" />
+    </c:using>
+    <c:using value="page">
+      <input type="hidden" id="page-data"
+             lquery="(data :page-number (dm:field * 'page-number)
+                           :title (dm:field * 'title)
+                           :commentary (dm:field * 'commentary)
+                           :publish-time (dm:field * 'publish-time)
+                           :tags (dm:field * 'tags)
+                           :transcript (dm:field * 'transcript)
+                           :image-uri (dm:field * 'image-uri)
+                           :thumb-uri (dm:field * 'thumb-uri)
+                           :double-page (= 1 (dm:field * 'double-page)))" />
+    </c:using>
+    
     <!-- Content for this template -->
     <div id="content" >
       <div id="reader" class="outlined">
         <div id="transcript" class="hidden" lquery="(text (dm:field page 'transcript))" />
         <img id="current-page" class="comic-page" src="" alt="comic page"
-             lquery="(image-metadata comic page)"/>
+             lquery="(image-metadata comic page)" />
       </div>
 
       <div id="artist-commentary" class="outlined text-box">

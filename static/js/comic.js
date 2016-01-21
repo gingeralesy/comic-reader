@@ -1,17 +1,17 @@
 $(function() {
-  var comicID = Number.parseInt($("#comic-id").val());
-  var initialPage = Number.parseInt($("#page-number").val());
+  var comic = $("input#comic-data").data();
+  var page = $("input#page-data").data();
   var body = $("body");
   var reader = $("#reader");
        
-  reader.creader("init",comicID,initialPage);
+  reader.creader(comic,page);
   body.keypress(function(event) {
     switch (event.key) {
     case "ArrowLeft":
-      reader.creader("prevPage");
+      reader.creader.previousPage();
       break;
     case "ArrowRight":
-      reader.creader("nextPage");
+      reader.creader.nextPage();
       break;
     }
   });
