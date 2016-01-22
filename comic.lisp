@@ -59,3 +59,12 @@
                               (dm:field comic :comic-name)
                               (dm:field page :page-number)))))
   node)
+
+(lquery:define-lquery-function hash-table-data (node table)
+  "Sets the contents of a hash-table as data in a node."
+  (maphash #'(lambda (key value)
+               (lquery:$ node (data key (typecase value
+                                          (boolean (when value "true"))
+                                          (otherwise value)))))
+           table)
+  node)

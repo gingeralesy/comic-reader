@@ -38,7 +38,9 @@
                                  :cover-uri ,(dm:field comic 'cover-uri)
                                  :description ,(dm:field comic 'description)
                                  :read-direction ,(dm:field comic 'read-direction)
-                                 :is-default ,(dm:field comic 'is-default))))
+                                 :is-default ,(= 1 (dm:field comic 'is-default))
+                                 :page-count ,(length (dm:get 'comic-page
+                                                              (db:query (:= 'comic-id (dm:id comic))))))))
 
 (defun comic (&key path id)
   "Gets a specific or the default comic."

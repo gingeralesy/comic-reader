@@ -11,27 +11,10 @@
   <body>
     <c:splice lquery="(reader-template :header)"/>
 
-    <c:using value="comic">
-      <input type="hidden" id="comic-data"
-             lquery="(data :id (dm:id *)
-                           :path (dm:field * 'comic-path)
-                           :name (dm:field * 'comic-name)
-                           :author (dm:field * 'author)
-                           :cover (dm:field * 'cover-uri)
-                           :description (dm:field * 'description))" />
-    </c:using>
-    <c:using value="page">
-      <input type="hidden" id="page-data"
-             lquery="(data :page-number (dm:field * 'page-number)
-                           :title (dm:field * 'title)
-                           :commentary (dm:field * 'commentary)
-                           :publish-time (dm:field * 'publish-time)
-                           :tags (dm:field * 'tags)
-                           :transcript (dm:field * 'transcript)
-                           :image-uri (dm:field * 'image-uri)
-                           :thumb-uri (dm:field * 'thumb-uri)
-                           :double-page (= 1 (dm:field * 'double-page)))" />
-    </c:using>
+    <input type="hidden" id="comic-data"
+           lquery="(hash-table-data (comic-reader::comic-hash-table comic))"/>
+    <input type="hidden" id="page-data"
+           lquery="(hash-table-data (comic-reader::page-hash-table page))"/>
     
     <!-- Content for this template -->
     <div id="content" >

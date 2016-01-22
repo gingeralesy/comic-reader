@@ -15,7 +15,7 @@
     if ($.isEmptyObject(page))
       throwError("Missing parameter: page");
 
-    var pageNum = parsePageNum(page["pageNumber"]);
+    var pageNum = parsePageNum(page.pageNumber);
     
     this.$el = element;
     this.comic = comic;
@@ -26,7 +26,7 @@
     getComicPages(comic.id,parsePageNum(pageNum - 1),3,function(resp) {
       if (resp && $.isArray(resp.data)) {
         $.each(resp.data,function(i,page) {
-          var pageNum = parsePageNum(page["pageNumber"]);
+          var pageNum = parsePageNum(page.pageNumber);
 
           if (pageNum == reader.currentPage) {
             setPage.apply(reader,[page,CUR_PAGE_ID]);
