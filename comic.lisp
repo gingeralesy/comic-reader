@@ -40,6 +40,7 @@
             (pages (make-array count :fill-pointer 0 :element-type 'number))
             (current-time (get-universal-time)))
        ;; TODO: make a db.lisp function that returns all the wanted pages with a single call
+       ;; TODO: get the full count of pages and/or latest page as the default values for count and start
        (dotimes (page-number count)
          (let ((page (page (dm:id comic) :page-number (+ start page-number))))
            (when (and page (<= (dm:field page 'publish-time) current-time))
