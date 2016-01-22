@@ -8,10 +8,10 @@ $(function() {
   body.keypress(function(event) {
     switch (event.key) {
     case "ArrowLeft":
-      reader.creader.previousPage();
+      reader.creader().previousPage();
       break;
     case "ArrowRight":
-      reader.creader.nextPage();
+      reader.creader().nextPage();
       break;
     }
   });
