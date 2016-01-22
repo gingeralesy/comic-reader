@@ -29,23 +29,23 @@
        (api-output (comic-hash-table comic))))
     (T (wrong-method-error (http-method *request*)))))
 
-(define-api comic/page (comic-id start end) ()
+(define-api comic/page (comic-id start count) ()
   "API interface for getting metadata for comic pages."
   (case (http-method *request*)
     (:get
      (let* ((comic (comic :id (when comic-id
                                 (parse-integer comic-id :junk-allowed T))))
             (start (when start (parse-integer start :junk-allowed T)))
-            (end (when end (parse-integer end :junk-allowed T)))
-            (pages (make-array (1+ (- end start)) :fill-pointer 0 :element-type 'number))
+            (count (or (when count (parse-integer count :junk-allowed T)) 1))
+            (pages (make-array count :fill-pointer 0 :element-type 'number))
             (current-time (get-universal-time)))
        ;; TODO: make a db.lisp function that returns all the wanted pages with a single call
-       (dotimes (page-number (1+ (- end start)))
+       (dotimes (page-number count)
          (let ((page (page (dm:id comic) :page-number (+ start page-number))))
            (when (and page (<= (dm:field page 'publish-time) current-time))
              (vector-push (page-hash-table page) pages))))
        (unless (< 0 (length pages))
-         (error 'request-not-found :message (format NIL "Comic pages ~a to ~a do not exist." start end)))
+         (error 'request-not-found :message (format NIL "Comic pages ~a to ~a do not exist." start (+ start count))))
        (api-output pages)))
     (T (wrong-method-error (http-method *request*)))))
 

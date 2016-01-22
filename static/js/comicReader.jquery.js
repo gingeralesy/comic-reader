@@ -23,7 +23,7 @@
     this.currentPage = pageNum;
 
     var reader = this;
-    getComicPages(comic.id,parsePageNum(pageNum - 1),pageNum + 1,function(resp) {
+    getComicPages(comic.id,parsePageNum(pageNum - 1),3,function(resp) {
       if (resp && $.isArray(resp.data)) {
         $.each(resp.data,function(i,page) {
           var pageNum = parsePageNum(page["pageNumber"]);
@@ -108,16 +108,16 @@
   };
   
   var getComicPage = function(comicID,pageNum,success,error,complete) {
-    getComicPages(comicID,pageNum,pageNum,success,error,complete);
+    getComicPages(comicID,pageNum,1,success,error,complete);
   };
   
-  var getComicPages = function(comicID,startPage,endPage,success,error,complete) {
-    startPage = parsePageNum(startPage);
-    endPage = parsePageNum(endPage);
+  var getComicPages = function(comicID,startPage,count,success,error,complete) {
+    var startPage = parsePageNum(startPage);
+    var count = parsePageNum(count);
     sendRequest("/api/comic/page", "GET", {
       "comic-id" : comicID,
       "start" : startPage,
-      "end" : endPage
+      "count" : count
     }, success, error, complete);
   };
   
