@@ -23,7 +23,7 @@
     this._priv.curPage = pageNum;
 
     var reader = this;
-    if (pageNum + 1 < comic.pageCount) {
+    if (0 < pageNum || pageNum + 1 < comic.pageCount) {
       getComicPages(comic.id, parsePageNum(pageNum - 1),
                     Math.min(3,comic.pageCount), function(resp) {
         if (resp && $.isArray(resp.data)) {
