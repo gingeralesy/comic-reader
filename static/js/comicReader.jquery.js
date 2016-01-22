@@ -19,55 +19,63 @@
     
     this.$el = element;
     this.comic = comic;
-    this.pageCache[pageNum] = page;
-    this.currentPage = pageNum;
+    this._priv.pageCache[pageNum] = page;
+    this._priv.curPage = pageNum;
 
     var reader = this;
-    getComicPages(comic.id,parsePageNum(pageNum - 1),3,function(resp) {
-      if (resp && $.isArray(resp.data)) {
-        $.each(resp.data,function(i,page) {
-          var pageNum = parsePageNum(page.pageNumber);
+    if (pageNum + 1 < comic.pageCount) {
+      getComicPages(comic.id, parsePageNum(pageNum - 1),
+                    Math.min(3,comic.pageCount), function(resp) {
+        if (resp && $.isArray(resp.data)) {
+          $.each(resp.data,function(i,page) {
+            var pageNum = parsePageNum(page.pageNumber);
 
-          if (pageNum == reader.currentPage) {
-            setPage.apply(reader,[page,CUR_PAGE_ID]);
-            if (page.transcript)
-              setTranscript.apply(reader,[page.transcript]);
-          } else if (pageNum == reader.currentPage - 1) {
-            setPage.apply(reader,[page,PREV_PAGE_ID]);
-          } else if (pageNum == reader.currentPage + 1) {
-            setPage.apply(reader,[page,NEXT_PAGE_ID]);
-          }
-          
-          reader.pageCache[pageNum] = page;
-        });
-      }
-    });
+            if (pageNum == reader.currentPage) {
+              setPage.apply(reader,[page,CUR_PAGE_ID]);
+              if (page.transcript)
+                setTranscript.apply(reader,[page.transcript]);
+            } else if (pageNum == reader.currentPage - 1) {
+              setPage.apply(reader,[page,PREV_PAGE_ID]);
+            } else if (pageNum == reader.currentPage + 1) {
+              setPage.apply(reader,[page,NEXT_PAGE_ID]);
+            }
+            
+            reader._priv.pageCache[pageNum] = page;
+          });
+        }
+      });
+    }
   }
   // --- Public API ---
   ComicReader.prototype.$el = $();
   ComicReader.prototype.comic = {};
-  ComicReader.prototype.pageCache = {};
-  ComicReader.prototype.animating = false; // TODO: Find a way to make this read-only
-  ComicReader.prototype.currentPage = 0; // TODO: Find a way to make this read-only
+  ComicReader.prototype.currentPage = function() {
+    return this._priv.curPage;
+  };
   ComicReader.prototype.nextPage = function() {
     if (this.isBusy())
       return;
     // TODO: actually change page
-    this.currentPage += 1;
+    this._priv.curPage += 1;
     return this;
   };
   ComicReader.prototype.previousPage = function() {
-    if (isBusy.apply(this))
+    if (this.isBusy())
       return;
     // TODO: actually change page
-    this.currentPage -= 1;
+    this._priv.curPage -= 1;
     return this;
   };
   ComicReader.prototype.isBusy = function() {
-    return this.animating;
+    return this._priv.animating;
   };
 
   // --- Private API ---
+  ComicReader.prototype._priv = {};
+  ComicReader.prototype._priv.animating = false;
+  ComicReader.prototype._priv.curPage = 0;
+  ComicReader.prototype._priv.pageCache = {};
+  
   // -- main private interface --
   var parsePageNum = function(pageNum) {
     pageNum = parseInt(pageNum);
