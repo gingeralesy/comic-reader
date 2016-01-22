@@ -154,6 +154,8 @@
 
   // --- jQuery plugin extension ---
   $.fn.creader = function(comic,page) {
-    this.creader = new ComicReader(this,comic,page);
+    if (!comic || !page)
+      return this.data(CREADER);
+    this.data(CREADER,new ComicReader(this,comic,page));
   };
 }(jQuery));
