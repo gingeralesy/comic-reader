@@ -77,13 +77,16 @@
         (db:update 'comic (db:query (:= '_id (dm:field old-comic '_id))) field-values)
         (db:insert 'comic field-values))))
 
-(defun pages (comic-id &key (up-to-time (get-universal-time)))
+(defun pages (comic-id &key (up-to-time (get-universal-time)) (start 0) count)
   "Gets all of the pages for the specified comic."
   (dm:get 'comic-page
           (if up-to-time
               (db:query (:and (:= 'comic-id comic-id)
+                              (:<= start 'page-number)
                               (:<= 'publish-time up-to-time)))
-              (db:query (:= 'comic-id comic-id)))
+              (db:query (:and (:= 'comic-id comic-id)
+                              (:<= start 'page-number))))
+          :amount count
           :sort '((publish-time :DESC))))
 
 (defun page-hash-table (page)

@@ -40,11 +40,10 @@
             (count (or (when count (parse-integer count :junk-allowed T)) 1))
             (pages (make-array count :fill-pointer 0 :element-type 'number))
             (current-time (get-universal-time)))
-       ;; TODO: make a db.lisp function that returns all the wanted pages with a single call
-       (dotimes (page-number count)
-         (let ((page (page (dm:id comic) :page-number (+ start page-number))))
-           (when (and page (<= (dm:field page 'publish-time) current-time))
-             (vector-push (page-hash-table page) pages))))
+       (mapcar #'(lambda (page)
+                   (when (and page (<= (dm:field page 'publish-time) current-time))
+                     (vector-push (page-hash-table page) pages)))
+               (pages (dm:id comic) :start start :count count))
        (unless (< 0 (length pages))
          (error 'request-not-found :message (format NIL "Comic pages ~a to ~a do not exist."
                                                     start (1- (+ start count)))))
@@ -71,5 +70,5 @@
   node)
 
 (lquery:define-lquery-function append-clone (node query)
-  "Appends the clone of the element of given CSS query."
+  "Appends the clone of the element of given CSS query to the node."
   (lquery:$ query (clone) (append-to node)))
