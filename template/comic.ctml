@@ -19,50 +19,7 @@
     <!-- Content for this template -->
     <div id="content" >
       <div id="navigation-top" class="navigation outlined">
-        <c:let page="(dm:field page :page-number)"
-               path="(dm:field comic :comic-path)"
-               last-page="(1- page-count)">
-          <c:if test="(< 0 page)">
-            <c:then>
-              <a href="#" class="page-link first-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path 0)'>
-                <i class="fa fa-5x fa-angle-double-left"></i>
-              </a>
-              <a href="#" class="page-link prev-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path (1- page))'>
-                <i class="fa fa-5x fa-angle-left"></i>
-              </a>
-            </c:then>
-            <c:else>
-              <span class="page-link first-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-double-left"></i>
-              </span>
-              <span class="page-link prev-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-left"></i>
-              </span>
-            </c:else>
-          </c:if>
-          <c:if test="(< page last-page)">
-            <c:then>
-              <a href="#" class="page-link next-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path (1+ page))'>
-                <i class="fa fa-5x fa-angle-right"></i>
-              </a>
-              <a href="#" class="page-link last-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path last-page)'>
-                <i class="fa fa-5x fa-angle-double-right"></i>
-              </a>
-            </c:then>
-            <c:else>
-              <span class="page-link next-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-right"></i>
-              </span>
-              <span class="page-link last-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-double-right"></i>
-              </span>
-            </c:else>
-          </c:if>
-        </c:let>
+        <c:splice lquery="(reader-template :navigation)"/>
       </div>
       
       <div id="reader" class="outlined">
@@ -72,50 +29,7 @@
       </div>
       
       <div id="navigation-bottom"  class="navigation outlined">
-        <c:let page="(dm:field page :page-number)"
-               path="(dm:field comic :comic-path)"
-               last-page="(1- page-count)">
-          <c:if test="(< 0 page)">
-            <c:then>
-              <a href="#" class="page-link first-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path 0)'>
-                <i class="fa fa-5x fa-angle-double-left"></i>
-              </a>
-              <a href="#" class="page-link prev-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path (1- page))'>
-                <i class="fa fa-5x fa-angle-left"></i>
-              </a>
-            </c:then>
-            <c:else>
-              <span class="page-link first-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-double-left"></i>
-              </span>
-              <span class="page-link prev-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-left"></i>
-              </span>
-            </c:else>
-          </c:if>
-          <c:if test="(< page last-page)">
-            <c:then>
-              <a href="#" class="page-link next-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path (1+ page))'>
-                <i class="fa fa-5x fa-angle-right"></i>
-              </a>
-              <a href="#" class="page-link last-page-link"
-                 @href='(#?"comic/comic/{0}/{1}" path last-page)'>
-                <i class="fa fa-5x fa-angle-double-right"></i>
-              </a>
-            </c:then>
-            <c:else>
-              <span class="page-link next-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-right"></i>
-              </span>
-              <span class="page-link last-page-link disabled-link">
-                <i class="fa fa-5x fa-angle-double-right"></i>
-              </span>
-            </c:else>
-          </c:if>
-        </c:let>
+        <c:splice lquery="(reader-template :navigation)"/>
       </div>
 
       <div id="artist-commentary" class="outlined text-box">
