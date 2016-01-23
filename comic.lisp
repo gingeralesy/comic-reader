@@ -69,3 +69,7 @@
                                           (otherwise value)))))
            table)
   node)
+
+(lquery:define-lquery-function append-clone (node query)
+  "Appends the clone of the element of given CSS query."
+  (lquery:$ query (clone) (append-to node)))
