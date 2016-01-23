@@ -34,8 +34,9 @@
   "API interface for getting metadata for comic pages."
   (case (http-method *request*)
     (:get
-     (let* ((comic (comic :id (when comic-id
-                                (parse-integer comic-id :junk-allowed T))))
+     (let* ((comic (or (comic :id (when comic-id
+                                    (parse-integer comic-id :junk-allowed T)))
+                       (error 'request-not-found :message "Invalid comic id.")))
             (start (when start (parse-integer start :junk-allowed T)))
             (count (or (when count (parse-integer count :junk-allowed T)) 1))
             (pages (make-array count :fill-pointer 0 :element-type 'number))
