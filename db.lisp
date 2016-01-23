@@ -87,7 +87,7 @@
               (db:query (:and (:= 'comic-id comic-id)
                               (:<= start 'page-number))))
           :amount count
-          :sort '((publish-time :DESC))))
+          :sort '((page-number :ASC))))
 
 (defun page-hash-table (page)
   "Converts the page data model into a hash-table."
