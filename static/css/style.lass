@@ -35,12 +35,11 @@
  :width 25%
  :height 100%
  :text-align center
- :cursor pointer)
-
-(".page-link:not(.disabled-link)"
+ :cursor pointer
  :color black
  (:visited :color black)
- (:hover :color red))
-
-(.disabled-link
- :color gray)
+ (:hover :color red)
+ (.disabled-link
+  :color gray
+  (:visited :color gray)
+  (:hover :color gray)))
