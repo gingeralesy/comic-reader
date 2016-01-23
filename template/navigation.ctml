@@ -46,7 +46,7 @@
       <div class="page-link last-page-link disabled-link">
         <span class="fa fa-5x fa-angle-double-right"></span>
         <span class="sr-text">Last page</span>
-      </span>
+      </div>
     </c:else>
   </c:if>
 </c:let>
