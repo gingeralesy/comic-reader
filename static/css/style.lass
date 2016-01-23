@@ -34,4 +34,11 @@
  :box-sizing border-box
  :width 25%
  :height 100%
- :text-align center)
+ :text-align center
+ :cursor pointer
+ :color black
+ (:visited :color black)
+ (:hover :color red))
+
+(.disabled-link
+ :color gray)
