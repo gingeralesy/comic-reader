@@ -39,9 +39,7 @@
                                  :description ,(dm:field comic 'description)
                                  :read-direction ,(dm:field comic 'read-direction)
                                  :is-default ,(= 1 (dm:field comic 'is-default))
-                                 :page-count ,(length (dm:get 'comic-page
-                                                              (db:query (:and (:= 'comic-id (dm:id comic))
-                                                                              (:<= (get-universal-time) 'publish-time))))))))
+                                 :page-count ,(length (pages (dm:id comic))))))
 
 (defun comic (&key path id)
   "Gets a specific or the default comic."

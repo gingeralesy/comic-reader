@@ -21,7 +21,7 @@
       <div id="navigation-top" class="navigation outlined">
         <c:let page="(dm:field page :page-number)"
                path="(dm:field comic :comic-path)"
-               last-page="0"> <!-- TODO: last-page value -->
+               last-page="(1- page-count)">
           <c:if test="(< 0 page)">
             <c:then>
               <a href="#" class="page-link first-page-link"
@@ -73,8 +73,8 @@
       
       <div id="navigation-bottom"  class="navigation outlined">
         <c:let page="(dm:field page :page-number)"
-        path="(dm:field comic :comic-path)"
-        last-page="0"> <!-- TODO: last-page value -->
+               path="(dm:field comic :comic-path)"
+               last-page="(1- page-count)">
           <c:if test="(< 0 page)">
             <c:then>
               <a href="#" class="page-link first-page-link"

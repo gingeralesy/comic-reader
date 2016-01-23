@@ -17,7 +17,8 @@
     (r-clip:process
      T
      :comic comic
-     :page page)))
+     :page page
+     :page-count (length (pages (dm:id comic))))))
 
 (define-api comic (comic-id) ()
   "API interface for getting metadata for a comic"
