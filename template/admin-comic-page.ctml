@@ -113,10 +113,6 @@
           <input type="text" name="tags" placeholder="Tags separated with commas"
                  lquery="(val (when page (dm:field page 'tags)))" /><br/>
 
-          <label for="double-page" >Double page</label>
-          <input type="checkbox" name="double-page" value="true"
-                 lquery="(attr :checked (when page (= 1 (dm:field page 'double-page))))"/><br/>
-
           <label for="commentary" >Commentary</label>
           <textarea name="commentary" placeholder="Artist's commentary"
                     lquery="(val (when page (dm:field page 'commentary)))" ></textarea><br/>
