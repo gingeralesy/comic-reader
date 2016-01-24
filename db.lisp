@@ -93,20 +93,22 @@
 
 (defun page-hash-table (page)
   "Converts the page data model into a hash-table."
-  (alexandria:plist-hash-table `(:id ,(dm:id page)
-                                 :comic-id ,(dm:field page 'comic-id)
-                                 :page-number ,(dm:field page 'page-number)
-                                 :title ,(dm:field page 'title)
-                                 :commentary ,(dm:field page 'commentary)
-                                 :creation-time ,(dm:field page 'creation-time)
-                                 :publish-time ,(dm:field page 'publish-time)                                               
-                                 :tags ,(dm:field page 'tags)
-                                 :transcript ,(dm:field page 'transcript)
-                                 :image-uri ,(dm:field page 'image-uri)
-                                 :thumb-uri ,(dm:field page 'thumb-uri)
-                                 :double-page ,(= 1 (dm:field page 'double-page))
-                                 :width ,(dm:field page 'width)
-                                 :height ,(dm:field page 'height))))
+  (let ((width (dm:field page 'width))
+        (height (dm:field page 'height)))
+    (alexandria:plist-hash-table `(:id ,(dm:id page)
+                                   :comic-id ,(dm:field page 'comic-id)
+                                   :page-number ,(dm:field page 'page-number)
+                                   :title ,(dm:field page 'title)
+                                   :commentary ,(dm:field page 'commentary)
+                                   :creation-time ,(dm:field page 'creation-time)
+                                   :publish-time ,(dm:field page 'publish-time)                                               
+                                   :tags ,(dm:field page 'tags)
+                                   :transcript ,(dm:field page 'transcript)
+                                   :image-uri ,(dm:field page 'image-uri)
+                                   :thumb-uri ,(dm:field page 'thumb-uri)
+                                   :double-page ,(= 1 (dm:field page 'double-page))
+                                   :width ,(when (< 0 width) width)
+                                   :height ,(when (< 0 height) height)))))
 
 (defun page (comic-id &key page-number (up-to-time (get-universal-time)))
   "Gets the specific page of a comic or the latest one."
@@ -125,7 +127,7 @@
 (defun set-page (comic-id page-number image-uri
                  &key title commentary publish-time
                       tags transcript thumb-uri double-page
-                      (width 0) (height 0))
+                      width height)
   (unless (comic :id comic-id)
     (error 'database-invalid-field :message "Invalid comic specified."))
   (let* ((old-page (page comic-id :page-number page-number))
@@ -144,8 +146,8 @@
                                                       :image-uri ,image-uri
                                                       :thumb-uri ,thumb-uri
                                                       :double-page ,(if double-page 1 0)
-                                                      :width ,width
-                                                      :height ,height))))
+                                                      :width ,(or width 0)
+                                                      :height ,(or height 0)))))
     (if old-page
         (db:update 'comic-page
                    (db:query (:and (:= 'comic-id comic-id)

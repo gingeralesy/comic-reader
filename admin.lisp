@@ -60,7 +60,9 @@
                 (tags (or* (post-var "tags")))
                 (commentary (or* (post-var "commentary")))
                 (transcript (or* (post-var "transcript")))
-                (double-page (boolean-post-var "double-page")))
+                (double-page (boolean-post-var "double-page"))
+                (width (int-post-var "width"))
+                (height (int-post-var "height")))
             (unless (comic :id comic-id)
               (error 'api-argument-invalid :message "Invalid comic."))
             (unless page-number
@@ -72,7 +74,7 @@
                       :title title :commentary commentary
                       :publish-time publish-time :tags tags
                       :transcript transcript :thumb-uri thumb-uri
-                      :double-page double-page)
+                      :double-page double-page :width width :height height)
             (unless (page comic-id :page-number page-number :up-to-time NIL)
               (error 'api-error :message "Failed to save page into database.")))))
       (r-clip:process

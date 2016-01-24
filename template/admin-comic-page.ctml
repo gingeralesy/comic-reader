@@ -77,9 +77,19 @@
                  lquery="(val (if page (dm:field page 'comic-id) (dm:id comic)))"/>
 
           <label for="page-number">Page number</label>
-          <input type="text" name="page-number" placeholder="Comic page number"
+          <input type="number" name="page-number" placeholder="Comic page number"
                  lquery="(val (if page (dm:field page 'page-number) (length pages)))" required /><br/>
 
+          <label for="width">Page width</label>
+          <input type="number" name="width"
+                 placeholder="Comic page width" 
+                 lquery="(val (when page (dm:field page 'width)))" /><br/>
+
+          <label for="height">Page height</label>
+          <input type="number" name="height"
+                 placeholder="Comic page height" 
+                 lquery="(val (when page (dm:field page 'height)))" /><br/>
+          
           <label for="image-uri">Page image</label>
           <input type="text" name="image-uri"
                  placeholder="Address to the comic page image."
@@ -95,7 +105,7 @@
                  lquery="(val (when page (dm:field page 'title)))" /><br/>
 
           <label for="publish-time" >Publish time</label>
-          <input type="text" name="publish-time"
+          <input type="number" name="publish-time"
                  placeholder="TODO: make this into a calendar to pick the date from"
                  lquery="(val (when page (dm:field page 'publish-time)))" /><br/>
 
