@@ -19,7 +19,9 @@
                            (transcript :text)
                            (image-uri (:varchar 128))
                            (thumb-uri (:varchar 128))
-                           (double-page (:integer 1)))))
+                           (double-page (:integer 1))
+                           (width (:integer 8))
+                           (height (:integer 8)))))
 
 (defun comics (&optional author)
   "Gets all of the comics. All of them. Or just for an author."
@@ -102,7 +104,9 @@
                                  :transcript ,(dm:field page 'transcript)
                                  :image-uri ,(dm:field page 'image-uri)
                                  :thumb-uri ,(dm:field page 'thumb-uri)
-                                 :double-page ,(= 1 (dm:field page 'double-page)))))
+                                 :double-page ,(= 1 (dm:field page 'double-page))
+                                 :width ,(dm:field page 'width)
+                                 :height ,(dm:field page 'height))))
 
 (defun page (comic-id &key page-number (up-to-time (get-universal-time)))
   "Gets the specific page of a comic or the latest one."
@@ -120,7 +124,8 @@
 
 (defun set-page (comic-id page-number image-uri
                  &key title commentary publish-time
-                      tags transcript thumb-uri double-page)
+                      tags transcript thumb-uri double-page
+                      (width 0) (height 0))
   (unless (comic :id comic-id)
     (error 'database-invalid-field :message "Invalid comic specified."))
   (let* ((old-page (page comic-id :page-number page-number))
@@ -138,7 +143,9 @@
                                                       :transcript ,transcript
                                                       :image-uri ,image-uri
                                                       :thumb-uri ,thumb-uri
-                                                      :double-page ,(if double-page 1 0)))))
+                                                      :double-page ,(if double-page 1 0)
+                                                      :width ,width
+                                                      :height ,height))))
     (if old-page
         (db:update 'comic-page
                    (db:query (:and (:= 'comic-id comic-id)
