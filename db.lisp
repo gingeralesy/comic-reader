@@ -142,8 +142,8 @@
                                                       :transcript ,transcript
                                                       :image-uri ,image-uri
                                                       :thumb-uri ,thumb-uri
-                                                      :width ,(or width 0)
-                                                      :height ,(or height 0)))))
+                                                      :width ,(if (and width (< 0 width)) width 0)
+                                                      :height ,(if (and height (< 0 height)) height 0)))))
     (if old-page
         (db:update 'comic-page
                    (db:query (:and (:= 'comic-id comic-id)
